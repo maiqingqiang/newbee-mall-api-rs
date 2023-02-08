@@ -1,0 +1,13 @@
+DROP TABLE tb_newbee_mall_admin_user;
+DROP TABLE tb_newbee_mall_carousel;
+DROP TABLE tb_newbee_mall_goods_category;
+DROP TABLE tb_newbee_mall_goods_info;
+DROP TABLE tb_newbee_mall_index_config;
+DROP TABLE tb_newbee_mall_order;
+DROP TABLE tb_newbee_mall_order_address;
+DROP TABLE tb_newbee_mall_order_item;
+DROP TABLE tb_newbee_mall_shopping_cart_item;
+DROP TABLE tb_newbee_mall_user;
+DROP TABLE tb_newbee_mall_user_address;
+DROP TABLE tb_newbee_mall_user_token;
+DROP TABLE tb_newbee_mall_admin_user_token;
