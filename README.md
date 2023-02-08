@@ -22,7 +22,7 @@
     -
     <a href="https://github.com/maiqingqiang/newbee-mall-api-rs/issues">反馈 Bug</a>
     ·
-    <a href="https://github.com/maiqingqiang/newbee-mall-api-rs/issues">讨论</a>
+    <a href="https://github.com/maiqingqiang/newbee-mall-api-rs/discussions">讨论</a>
     -
   </p>
 </div>
