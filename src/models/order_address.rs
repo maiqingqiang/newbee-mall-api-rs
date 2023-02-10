@@ -1,7 +1,7 @@
-use diesel::prelude::*;
 use crate::bootstrap::database::PooledConn;
 use crate::models::schema;
 use crate::models::schema::tb_newbee_mall_order_address::dsl;
+use diesel::prelude::*;
 
 #[derive(Debug, Queryable, AsChangeset, Insertable)]
 #[diesel(table_name = schema::tb_newbee_mall_order_address)]
@@ -23,9 +23,7 @@ impl OrderAddress {
     }
 
     pub fn find(conn: &mut PooledConn, order_id: i64) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_order_address
-            .find(order_id)
-            .first(conn)
+        dsl::tb_newbee_mall_order_address.find(order_id).first(conn)
     }
 
     pub fn delete(conn: &mut PooledConn, order_id: i64) -> QueryResult<usize> {

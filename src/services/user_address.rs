@@ -15,7 +15,11 @@ pub fn save(conn: &mut PooledConn, user_address: NewUserAddress) -> result::Resu
     Ok(UserAddress::create(conn, user_address)?)
 }
 
-pub fn update(conn: &mut PooledConn, user_id: i64, update_user_address: UserAddresseUpdateRequest) -> result::Result<usize> {
+pub fn update(
+    conn: &mut PooledConn,
+    user_id: i64,
+    update_user_address: UserAddresseUpdateRequest,
+) -> result::Result<usize> {
     let address_id = update_user_address.address_id.parse::<i64>()?;
 
     let mut user_address = UserAddress::find(conn, address_id)?;

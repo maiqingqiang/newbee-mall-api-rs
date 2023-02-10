@@ -3,10 +3,10 @@ use diesel::prelude::*;
 use rand::Rng;
 
 use crate::bootstrap::database::PooledConn;
-use crate::models::NOT_DELETE;
-use crate::models::schema::tb_newbee_mall_user::dsl;
-use crate::utils::md5_string;
 use crate::models::schema;
+use crate::models::schema::tb_newbee_mall_user::dsl;
+use crate::models::NOT_DELETE;
+use crate::utils::md5_string;
 
 #[derive(Debug, Queryable, Clone, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_user)]
@@ -44,9 +44,7 @@ impl User {
     }
 
     pub fn find(conn: &mut PooledConn, user_id: i64) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_user
-            .find(user_id)
-            .first(conn)
+        dsl::tb_newbee_mall_user.find(user_id).first(conn)
     }
 
     pub fn find_by_login_name(conn: &mut PooledConn, login_name: String) -> QueryResult<Self> {
@@ -56,7 +54,11 @@ impl User {
             .first(conn)
     }
 
-    pub fn find_by_login_name_password(conn: &mut PooledConn, login_name: String, password: String) -> QueryResult<Self> {
+    pub fn find_by_login_name_password(
+        conn: &mut PooledConn,
+        login_name: String,
+        password: String,
+    ) -> QueryResult<Self> {
         dsl::tb_newbee_mall_user
             .filter(dsl::login_name.eq(login_name))
             .filter(dsl::password_md5.eq(password))

@@ -1,11 +1,11 @@
 pub mod app;
 pub mod bootstrap;
 pub mod config;
+pub mod middleware;
 pub mod models;
 pub mod routes;
 pub mod services;
 pub mod utils;
-pub mod middleware;
 
 pub mod constant {
     pub const DEFAULT_PER_PAGE: i64 = 10;
@@ -35,6 +35,6 @@ fn get_order_status_str(status: i8) -> &'static str {
         Some(-1) => "手动关闭",
         Some(-2) => "超时关闭",
         Some(-3) => "商家关闭",
-        _ => "error"
+        _ => "error",
     }
 }

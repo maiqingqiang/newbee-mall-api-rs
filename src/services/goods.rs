@@ -1,8 +1,8 @@
 use crate::bootstrap::database::PooledConn;
-use crate::bootstrap::{result};
 use crate::bootstrap::error::ApplicationError;
-use crate::models::{goods, Goods, GoodsFilter};
+use crate::bootstrap::result;
 use crate::models::pagination::Paginator;
+use crate::models::{goods, Goods, GoodsFilter};
 
 // 商品搜索
 pub fn list_by_search(

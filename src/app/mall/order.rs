@@ -1,11 +1,13 @@
-use actix_web::{get, post, put, web};
-use crate::app::mall::{OrderDetailResponse, OrderItem, OrderListRequest, OrderSaveRequest, PaySuccessRequest};
+use crate::app::mall::{
+    OrderDetailResponse, OrderItem, OrderListRequest, OrderSaveRequest, PaySuccessRequest,
+};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::middleware::authentication::Identity;
 use crate::models::order;
 use crate::{get_order_status_str, services};
+use actix_web::{get, post, put, web};
 
 // 生成订单接口
 #[post("/saveOrder")]
@@ -16,7 +18,12 @@ pub async fn save(
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
-    let order_no = services::order::save(conn, identity.user.user_id, json.address_id, json.cart_item_ids)?;
+    let order_no = services::order::save(
+        conn,
+        identity.user.user_id,
+        json.address_id,
+        json.cart_item_ids,
+    )?;
 
     Response::success(order_no)
 }
@@ -30,9 +37,8 @@ pub async fn detail(
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
-
-    let (order, order_items) = services::order::detail(conn, order_no.into_inner(), identity.user.user_id)?;
-
+    let (order, order_items) =
+        services::order::detail(conn, order_no.into_inner(), identity.user.user_id)?;
 
     let mut new_bee_mall_order_item_vos = vec![];
 
@@ -60,7 +66,6 @@ pub async fn detail(
     })
 }
 
-
 // 订单列表接口
 #[get("")]
 pub async fn list(
@@ -71,10 +76,13 @@ pub async fn list(
 
     let page_number = query.page_number.unwrap_or(0);
 
-    let response = services::order::list(conn, &order::Filter {
-        status: query.status,
-        page_number: page_number.into(),
-    })?;
+    let response = services::order::list(
+        conn,
+        &order::Filter {
+            status: query.status,
+            page_number: page_number.into(),
+        },
+    )?;
 
     Response::success(response)
 }
@@ -106,7 +114,6 @@ pub async fn finish(
 
     Response::success(())
 }
-
 
 // 模拟支付成功回调的接口
 #[get("/paySuccess")]

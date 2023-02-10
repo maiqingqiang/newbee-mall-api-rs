@@ -1,9 +1,9 @@
-use std::fmt::{Debug};
+use std::fmt::Debug;
 use std::num::ParseIntError;
 
 use actix_web::{http::StatusCode, HttpResponse, ResponseError};
 use derive_more::{Display, Error};
-use log::{error};
+use log::error;
 
 use crate::bootstrap::response::Response;
 
@@ -29,7 +29,11 @@ impl ResponseError for ApplicationError {
     }
 
     fn error_response(&self) -> HttpResponse {
-        error!("response error status:{} message:{}",self.status_code().as_u16(),self);
+        error!(
+            "response error status:{} message:{}",
+            self.status_code().as_u16(),
+            self
+        );
         Response::new(self.status_code(), self.to_string().as_str(), ())
     }
 }

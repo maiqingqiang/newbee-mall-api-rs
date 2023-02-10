@@ -1,8 +1,8 @@
 use crypto::digest::Digest;
 use crypto::md5::Md5;
 
-pub mod token;
 pub mod number;
+pub mod token;
 
 pub fn md5(s: &str) -> String {
     let mut md5 = Md5::new();
@@ -15,4 +15,3 @@ pub fn md5_string(s: String) -> String {
     md5.input_str(s.as_str());
     return md5.result_str();
 }
-

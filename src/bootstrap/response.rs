@@ -29,7 +29,12 @@ impl<T: Serialize> Response<T> {
     pub fn ok() -> result::Response {
         Response::<()>::success(())
     }
-    pub fn success_with_page(list: Vec<T>, total: i64, current_page: i64, per_page: i64) -> result::Response {
+    pub fn success_with_page(
+        list: Vec<T>,
+        total: i64,
+        current_page: i64,
+        per_page: i64,
+    ) -> result::Response {
         Response::success(Page::new(list, total, current_page, per_page))
     }
 }

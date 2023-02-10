@@ -1,14 +1,14 @@
-use crate::app::mall::{UserInfoResponse, LoginRequest, RegisterRequest, EditUserInfoRequest};
+use crate::app::mall::{EditUserInfoRequest, LoginRequest, RegisterRequest, UserInfoResponse};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::constant::INTRODUCE_SIGN;
-use crate::models::user::{NewUser};
+use crate::middleware::authentication::Identity;
+use crate::models::user::NewUser;
 use crate::services;
+use crate::utils::md5;
 use actix_web::{get, post, put, web};
 use chrono::Local;
-use crate::middleware::authentication::Identity;
-use crate::utils::md5;
 
 // 用户注册
 #[post("/register")]
@@ -45,10 +45,7 @@ pub async fn login(
 
 // 登出接口
 #[post("/logout")]
-pub async fn logout(
-    pool: web::Data<DatabasePool>,
-    identity: Identity,
-) -> result::Response {
+pub async fn logout(pool: web::Data<DatabasePool>, identity: Identity) -> result::Response {
     let conn = &mut pool.get()?;
     identity.logout(conn);
 
@@ -78,4 +75,3 @@ pub async fn edit_info(
 
     Response::success(())
 }
-

@@ -3,10 +3,10 @@ use diesel::helper_types::IntoBoxed;
 use diesel::mysql::Mysql;
 
 use crate::bootstrap::database::PooledConn;
-use crate::models::schema::tb_newbee_mall_goods_info::{dsl};
+use crate::models::pagination::Paginator;
+use crate::models::schema::tb_newbee_mall_goods_info::dsl;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use crate::models::pagination::{Paginator};
 
 use super::pagination::Paginate;
 
@@ -55,7 +55,6 @@ impl Goods {
     // 商品下架状态
     pub const SELL_STATUS_DOWN: i8 = 1;
 
-
     fn filter(filter: &GoodsFilter) -> IntoBoxed<dsl::tb_newbee_mall_goods_info, Mysql> {
         let mut query = dsl::tb_newbee_mall_goods_info.into_boxed();
 
@@ -76,20 +75,24 @@ impl Goods {
     }
 
     pub fn get(conn: &mut PooledConn, filter: &GoodsFilter) -> QueryResult<Paginator<Goods>> {
-        Paginate::new(||{
-            let mut query = Self::filter(filter);
+        Paginate::new(
+            || {
+                let mut query = Self::filter(filter);
 
-            if let Some(category_id) = &filter.goods_category_id {
-                query = query.filter(dsl::goods_category_id.eq(category_id));
-            }
-    
-            match &filter.order_by.as_deref() {
-                Some(GOOD_ORDER_BY_NEW) => query.order(dsl::goods_id.desc()),
-                Some(GOOD_ORDER_BY_PRICE) => query.order(dsl::selling_price.asc()),
-                // 默认按照库存数量从大到小排列
-                _ => query.order(dsl::stock_num.asc()),
-            }
-        },filter.page_number).load_with_paginator(conn)
+                if let Some(category_id) = &filter.goods_category_id {
+                    query = query.filter(dsl::goods_category_id.eq(category_id));
+                }
+
+                match &filter.order_by.as_deref() {
+                    Some(GOOD_ORDER_BY_NEW) => query.order(dsl::goods_id.desc()),
+                    Some(GOOD_ORDER_BY_PRICE) => query.order(dsl::selling_price.asc()),
+                    // 默认按照库存数量从大到小排列
+                    _ => query.order(dsl::stock_num.asc()),
+                }
+            },
+            filter.page_number,
+        )
+        .load_with_paginator(conn)
     }
 
     pub fn find(conn: &mut PooledConn, goods_id: u64) -> QueryResult<Self> {
@@ -103,7 +106,11 @@ impl Goods {
             .load(conn)
     }
 
-    pub fn subtract_stock_num(conn: &mut PooledConn, goods_id: u64, stock_num: u32) -> QueryResult<usize> {
+    pub fn subtract_stock_num(
+        conn: &mut PooledConn,
+        goods_id: u64,
+        stock_num: u32,
+    ) -> QueryResult<usize> {
         diesel::update(dsl::tb_newbee_mall_goods_info)
             .filter(dsl::goods_id.eq(goods_id))
             .filter(dsl::goods_sell_status.eq(Self::SELL_STATUS_UP))
@@ -112,7 +119,11 @@ impl Goods {
             .execute(conn)
     }
 
-    pub fn add_stock_num(conn: &mut PooledConn, goods_id: u64, stock_num: u32) -> QueryResult<usize> {
+    pub fn add_stock_num(
+        conn: &mut PooledConn,
+        goods_id: u64,
+        stock_num: u32,
+    ) -> QueryResult<usize> {
         diesel::update(dsl::tb_newbee_mall_goods_info)
             .filter(dsl::goods_id.eq(goods_id))
             .filter(dsl::goods_sell_status.eq(Self::SELL_STATUS_UP))

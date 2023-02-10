@@ -1,10 +1,10 @@
+use crate::bootstrap::database::PooledConn;
+use crate::models::schema;
+use crate::models::schema::tb_newbee_mall_user_address::dsl;
+use crate::models::{DELETED, NOT_DELETE};
 use chrono::{Local, NaiveDateTime};
 use diesel::prelude::*;
 use diesel::{QueryDsl, QueryResult, RunQueryDsl};
-use crate::bootstrap::database::PooledConn;
-use crate::models::{DELETED, NOT_DELETE};
-use crate::models::schema;
-use crate::models::schema::tb_newbee_mall_user_address::dsl;
 
 #[derive(Debug, Queryable, AsChangeset)]
 #[diesel(table_name = schema::tb_newbee_mall_user_address)]
@@ -22,7 +22,6 @@ pub struct UserAddress {
     pub create_time: NaiveDateTime,
     pub update_time: NaiveDateTime,
 }
-
 
 #[derive(Debug, Insertable)]
 #[diesel(table_name = schema::tb_newbee_mall_user_address)]
@@ -69,7 +68,11 @@ impl UserAddress {
             .execute(conn)
     }
 
-    pub fn update_default_flag(conn: &mut PooledConn, user_id: i64, default_flag: i8) -> QueryResult<usize> {
+    pub fn update_default_flag(
+        conn: &mut PooledConn,
+        user_id: i64,
+        default_flag: i8,
+    ) -> QueryResult<usize> {
         diesel::update(dsl::tb_newbee_mall_user_address)
             .filter(dsl::user_id.eq(user_id))
             .filter(dsl::is_deleted.eq(NOT_DELETE))

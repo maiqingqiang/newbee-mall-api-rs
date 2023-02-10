@@ -29,16 +29,18 @@ pub async fn search(
         })
     }
 
-    Response::success_with_page(response, goods_with_paginator.total, goods_with_paginator.current_page, goods_with_paginator.per_page)
+    Response::success_with_page(
+        response,
+        goods_with_paginator.total,
+        goods_with_paginator.current_page,
+        goods_with_paginator.per_page,
+    )
 }
 
 // 商品详情接口
 // 传参为商品id
 #[get("/detail/{goods_id}")]
-pub async fn detail(
-    pool: web::Data<DatabasePool>,
-    path: web::Path<u64>,
-) -> result::Response {
+pub async fn detail(pool: web::Data<DatabasePool>, path: web::Path<u64>) -> result::Response {
     let mut pool = pool.get()?;
 
     let goods_id = path.into_inner();

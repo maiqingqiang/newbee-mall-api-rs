@@ -1,24 +1,38 @@
-use std::collections::HashMap;
-use chrono::Local;
 use crate::app::mall::ShoppingCartItem;
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::error::ApplicationError;
 use crate::bootstrap::result;
 use crate::constant;
-use crate::models::{Goods};
+use crate::models::pagination::Paginator;
 use crate::models::shopping_cart::{NewShoppingCart, ShoppingCart};
+use crate::models::Goods;
+use chrono::Local;
+use std::collections::HashMap;
 
 pub fn list(conn: &mut PooledConn, user_id: i64) -> result::Result<Vec<ShoppingCartItem>> {
     let shopping_carts = ShoppingCart::get(conn, user_id)?;
     Ok(to_shopping_cart_items(conn, shopping_carts)?)
 }
 
+pub fn list_with_page(
+    conn: &mut PooledConn,
+    user_id: i64,
+    page: Option<i64>,
+) -> result::Result<Paginator<ShoppingCart>> {
+    let shopping_carts = ShoppingCart::get_with_page(conn, user_id, page)?;
+    Ok(shopping_carts)
+}
+
 pub fn save(conn: &mut PooledConn, cart: NewShoppingCart) -> result::Result<usize> {
     Ok(ShoppingCart::create(conn, cart)?)
 }
 
-
-pub fn update(conn: &mut PooledConn, user_id: i64, cart_item_id: i64, goods_count: i32) -> result::Result<usize> {
+pub fn update(
+    conn: &mut PooledConn,
+    user_id: i64,
+    cart_item_id: i64,
+    goods_count: i32,
+) -> result::Result<usize> {
     match ShoppingCart::find(conn, cart_item_id) {
         Ok(mut shopping_cart) => {
             if shopping_cart.user_id != user_id {
@@ -38,9 +52,7 @@ pub fn update(conn: &mut PooledConn, user_id: i64, cart_item_id: i64, goods_coun
 
             Ok(ShoppingCart::update(conn, shopping_cart)?)
         }
-        Err(_) => {
-            Err(constant::DATA_NOT_EXIST.into())
-        }
+        Err(_) => Err(constant::DATA_NOT_EXIST.into()),
     }
 }
 
@@ -53,17 +65,21 @@ pub fn delete(conn: &mut PooledConn, user_id: i64, cart_item_id: i64) -> result:
 
             Ok(ShoppingCart::delete(conn, shopping_cart.cart_item_id)?)
         }
-        Err(_) => {
-            Ok(0)
-        }
+        Err(_) => Ok(0),
     }
 }
 
-
-pub fn settle(conn: &mut PooledConn, user_id: i64, cart_item_ids: Vec<i64>) -> result::Result<Vec<ShoppingCartItem>> {
+pub fn settle(
+    conn: &mut PooledConn,
+    user_id: i64,
+    cart_item_ids: Vec<i64>,
+) -> result::Result<Vec<ShoppingCartItem>> {
     let shopping_cart_items = get_shopping_cart_items(conn, user_id, cart_item_ids)?;
 
-    let price_total = shopping_cart_items.iter().map(|i| i.selling_price).sum::<i32>();
+    let price_total = shopping_cart_items
+        .iter()
+        .map(|i| i.selling_price)
+        .sum::<i32>();
 
     if price_total < 1 {
         return Err("价格异常".into());
@@ -72,7 +88,11 @@ pub fn settle(conn: &mut PooledConn, user_id: i64, cart_item_ids: Vec<i64>) -> r
     Ok(shopping_cart_items)
 }
 
-pub(crate) fn get_shopping_cart_items(conn: &mut PooledConn, user_id: i64, cart_item_ids: Vec<i64>) -> result::Result<Vec<ShoppingCartItem>> {
+pub(crate) fn get_shopping_cart_items(
+    conn: &mut PooledConn,
+    user_id: i64,
+    cart_item_ids: Vec<i64>,
+) -> result::Result<Vec<ShoppingCartItem>> {
     if cart_item_ids.is_empty() {
         return Err("购物项不能为空".into());
     }
@@ -90,7 +110,10 @@ pub(crate) fn get_shopping_cart_items(conn: &mut PooledConn, user_id: i64, cart_
     Ok(to_shopping_cart_items(conn, shopping_carts)?)
 }
 
-fn to_shopping_cart_items(conn: &mut PooledConn, shopping_carts: Vec<ShoppingCart>) -> Result<Vec<ShoppingCartItem>, ApplicationError> {
+pub fn to_shopping_cart_items(
+    conn: &mut PooledConn,
+    shopping_carts: Vec<ShoppingCart>,
+) -> Result<Vec<ShoppingCartItem>, ApplicationError> {
     if shopping_carts.is_empty() {
         return Ok(vec![]);
     }
@@ -99,7 +122,10 @@ fn to_shopping_cart_items(conn: &mut PooledConn, shopping_carts: Vec<ShoppingCar
 
     let goods = Goods::get_by_goods_ids(conn, goods_ids)?;
 
-    let goods_map = goods.iter().map(|good| (good.goods_id, good)).collect::<HashMap<u64, &Goods>>();
+    let goods_map = goods
+        .iter()
+        .map(|good| (good.goods_id, good))
+        .collect::<HashMap<u64, &Goods>>();
 
     let mut shopping_cart_items: Vec<ShoppingCartItem> = vec![];
 

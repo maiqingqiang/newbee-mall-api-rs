@@ -8,8 +8,6 @@ use diesel::{
     },
 };
 
-
-
 const DEFAULT_PER_PAGE: i64 = 10;
 pub const DEFAULT_PAGE: i64 = 1;
 

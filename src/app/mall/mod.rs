@@ -1,19 +1,20 @@
 pub mod goods;
 pub mod goods_category;
 pub mod index;
-pub mod user;
-pub mod shopping_cart;
-pub mod user_address;
 pub mod order;
+pub mod shopping_cart;
+pub mod user;
+pub mod user_address;
 
-use std::str::FromStr;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Deserializer, Serialize};
+use std::str::FromStr;
 
 fn deserialize_empty_to_none<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
-    where
-        D: Deserializer<'de>,
-        T: FromStr, <T as FromStr>::Err: std::fmt::Debug
+where
+    D: Deserializer<'de>,
+    T: FromStr,
+    <T as FromStr>::Err: std::fmt::Debug,
 {
     let s: &str = Deserialize::deserialize(deserializer)?;
     if s.is_empty() {
@@ -194,7 +195,6 @@ pub struct ShoppingCartSaveRequest {
     pub goods_count: i32,
 }
 
-
 #[derive(Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct ShoppingCartUpdateRequest {
@@ -233,7 +233,6 @@ pub struct OrderListRequest {
     pub status: Option<i8>,
     pub page_number: Option<i64>,
 }
-
 
 #[derive(Serialize)]
 #[serde(rename_all(serialize = "camelCase"))]
@@ -280,4 +279,10 @@ struct OrderDetailResponse {
     pub create_time: NaiveDateTime,
     #[serde(rename = "newBeeMallOrderItemVOS")]
     pub new_bee_mall_order_item_vos: Vec<OrderItem>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct ShoppingCartListRequest {
+    pub page_number: Option<i64>,
 }

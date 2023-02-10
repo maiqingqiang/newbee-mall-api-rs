@@ -1,10 +1,11 @@
+use crate::bootstrap::database::PooledConn;
+use crate::models::pagination::{Paginate, Paginator};
+use crate::models::schema::tb_newbee_mall_shopping_cart_item::dsl;
+use crate::models::{schema, DELETED, NOT_DELETE};
 use chrono::NaiveDateTime;
 use diesel::dsl::IntoBoxed;
 use diesel::mysql::Mysql;
 use diesel::prelude::*;
-use crate::bootstrap::database::PooledConn;
-use crate::models::{DELETED, NOT_DELETE, pagination, schema};
-use crate::models::schema::tb_newbee_mall_shopping_cart_item::dsl;
 
 #[derive(Debug, Queryable, AsChangeset)]
 #[diesel(table_name = schema::tb_newbee_mall_shopping_cart_item)]
@@ -63,13 +64,12 @@ impl ShoppingCart {
             .load::<Self>(conn)
     }
 
-    pub fn get_by_page(conn: &mut PooledConn, user_id: i64, page: i64) -> QueryResult<Vec<Self>> {
-        let (limit, offset) = pagination(Some(page), Some(Self::SHOPPING_CART_PAGE_LIMIT));
-
-        Self::filter(user_id)
-            .limit(limit)
-            .offset(offset)
-            .load::<Self>(conn)
+    pub fn get_with_page(
+        conn: &mut PooledConn,
+        user_id: i64,
+        page: Option<i64>,
+    ) -> QueryResult<Paginator<Self>> {
+        Paginate::new(|| Self::filter(user_id), page).load_with_paginator(conn)
     }
 
     pub fn create(conn: &mut PooledConn, shopping_cart: NewShoppingCart) -> QueryResult<usize> {
@@ -88,15 +88,21 @@ impl ShoppingCart {
         Self::delete_by_cart_item_ids(conn, vec![cart_item_id])
     }
 
-    pub fn delete_by_cart_item_ids(conn: &mut PooledConn, cart_item_ids: Vec<i64>) -> QueryResult<usize> {
+    pub fn delete_by_cart_item_ids(
+        conn: &mut PooledConn,
+        cart_item_ids: Vec<i64>,
+    ) -> QueryResult<usize> {
         diesel::update(dsl::tb_newbee_mall_shopping_cart_item)
             .filter(dsl::cart_item_id.eq_any(cart_item_ids))
             .set(dsl::is_deleted.eq(DELETED))
             .execute(conn)
     }
 
-
-    pub fn get_by_cart_item_ids(conn: &mut PooledConn, user_id: i64, cart_item_ids: &Vec<i64>) -> QueryResult<Vec<Self>> {
+    pub fn get_by_cart_item_ids(
+        conn: &mut PooledConn,
+        user_id: i64,
+        cart_item_ids: &Vec<i64>,
+    ) -> QueryResult<Vec<Self>> {
         Self::filter(user_id)
             .filter(dsl::cart_item_id.eq_any(cart_item_ids))
             .load::<Self>(conn)

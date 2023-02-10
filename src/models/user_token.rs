@@ -1,8 +1,7 @@
-use chrono::{NaiveDateTime};
-use diesel::prelude::*;
 use crate::bootstrap::database::PooledConn;
 use crate::models::schema::tb_newbee_mall_user_token::dsl;
-
+use chrono::NaiveDateTime;
+use diesel::prelude::*;
 
 #[derive(Debug, Queryable, Insertable)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_user_token)]
@@ -15,9 +14,7 @@ pub struct UserToken {
 
 impl UserToken {
     pub fn find(conn: &mut PooledConn, id: i64) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_user_token
-            .find(id)
-            .first(conn)
+        dsl::tb_newbee_mall_user_token.find(id).first(conn)
     }
     pub fn find_by_token(conn: &mut PooledConn, token: String) -> QueryResult<Self> {
         dsl::tb_newbee_mall_user_token

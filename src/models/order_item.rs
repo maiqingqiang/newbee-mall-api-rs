@@ -1,8 +1,8 @@
-use chrono::NaiveDateTime;
-use diesel::prelude::*;
 use crate::bootstrap::database::PooledConn;
 use crate::models::schema;
 use crate::models::schema::tb_newbee_mall_order_item::dsl;
+use chrono::NaiveDateTime;
+use diesel::prelude::*;
 
 #[derive(Debug, Queryable, AsChangeset)]
 #[diesel(table_name = schema::tb_newbee_mall_order_item)]
@@ -35,7 +35,10 @@ impl OrderItem {
             .execute(conn)
     }
 
-    pub fn create_batch(conn: &mut PooledConn, order_items: Vec<NewOrderItem>) -> QueryResult<usize> {
+    pub fn create_batch(
+        conn: &mut PooledConn,
+        order_items: Vec<NewOrderItem>,
+    ) -> QueryResult<usize> {
         diesel::insert_into(dsl::tb_newbee_mall_order_item)
             .values(order_items)
             .execute(conn)

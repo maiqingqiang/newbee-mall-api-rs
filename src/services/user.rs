@@ -1,11 +1,11 @@
-use std::ops::Add;
-use chrono::{Duration, Local};
 use crate::app::mall::{EditUserInfoRequest, LoginRequest};
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::error::ApplicationError;
 use crate::bootstrap::result;
 use crate::models::user::{NewUser, User};
 use crate::models::user_token::UserToken;
+use chrono::{Duration, Local};
+use std::ops::Add;
 
 pub fn register(conn: &mut PooledConn, user: NewUser) -> result::Result<usize> {
     return match User::find_by_login_name(conn, user.login_name.clone()) {
@@ -16,9 +16,7 @@ pub fn register(conn: &mut PooledConn, user: NewUser) -> result::Result<usize> {
 
 pub fn login(conn: &mut PooledConn, data: LoginRequest) -> result::Result<String> {
     let user = match User::find_by_login_name_password(conn, data.login_name, data.password_md5) {
-        Ok(user) => {
-            user
-        }
+        Ok(user) => user,
         Err(_) => {
             return Err(ApplicationError::from("登录失败！"));
         }
@@ -31,9 +29,7 @@ pub fn login(conn: &mut PooledConn, data: LoginRequest) -> result::Result<String
     let token = user.generate_token();
 
     let user_token = match UserToken::find(conn, user.user_id) {
-        Ok(user_token) => {
-            user_token
-        }
+        Ok(user_token) => user_token,
         Err(_) => {
             let user_token = UserToken {
                 user_id: user.user_id,
@@ -50,7 +46,11 @@ pub fn login(conn: &mut PooledConn, data: LoginRequest) -> result::Result<String
     Ok(user_token.token)
 }
 
-pub fn edit_info(conn: &mut PooledConn, mut user: User, data: EditUserInfoRequest) -> result::Result<usize> {
+pub fn edit_info(
+    conn: &mut PooledConn,
+    mut user: User,
+    data: EditUserInfoRequest,
+) -> result::Result<usize> {
     user.nick_name = data.nick_name;
     user.introduce_sign = data.introduce_sign;
 
