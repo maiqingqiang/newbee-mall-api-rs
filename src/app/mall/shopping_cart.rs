@@ -8,7 +8,7 @@ use crate::models::shopping_cart::NewShoppingCart;
 use crate::services::shopping_cart;
 use actix_web::{
     get, post, put,
-    web::{Data, Json, Query, Path},
+    web::{Data, Json, Path, Query},
 };
 
 // 购物车列表(每页默认5条)
@@ -88,7 +88,7 @@ pub async fn update(
 #[put("/{newBeeMallShoppingCartItemId}")]
 pub async fn delete(
     pool: Data<DatabasePool>,
-    path: Path<(i64, )>,
+    path: Path<(i64,)>,
     identity: Identity,
 ) -> result::Response {
     let conn = &mut pool.get()?;

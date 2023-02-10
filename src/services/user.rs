@@ -1,9 +1,11 @@
-use crate::app::mall::{EditUserInfoRequest, LoginRequest};
+use crate::app::mall::{EditUserInfoRequest};
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::error::ApplicationError;
 use crate::bootstrap::result;
 use crate::models::user::{NewUser, User};
 use crate::models::user_token::UserToken;
+use crate::models::LOCKED;
+use crate::utils::token::generate_token;
 use chrono::{Duration, Local};
 use std::ops::Add;
 
@@ -14,19 +16,19 @@ pub fn register(conn: &mut PooledConn, user: NewUser) -> result::Result<usize> {
     };
 }
 
-pub fn login(conn: &mut PooledConn, data: LoginRequest) -> result::Result<String> {
-    let user = match User::find_by_login_name_password(conn, data.login_name, data.password_md5) {
+pub fn login(conn: &mut PooledConn, login_name: String, password_md5: String) -> result::Result<String> {
+    let user = match User::find_by_login_name_password(conn, login_name, password_md5) {
         Ok(user) => user,
         Err(_) => {
             return Err(ApplicationError::from("登录失败！"));
         }
     };
 
-    if user.locked_flag == User::LOCKED {
+    if user.locked_flag == LOCKED {
         return Err("用户已被禁止登录！".into());
     }
 
-    let token = user.generate_token();
+    let token = generate_token(user.user_id);
 
     let user_token = match UserToken::find(conn, user.user_id) {
         Ok(user_token) => user_token,

@@ -3,6 +3,7 @@ use actix_web::web;
 
 pub fn register_routes(s: &mut web::ServiceConfig) {
     s.service(
+        // /api/v1/
         web::scope("/v1")
             .service(goods::search)
             .service(goods_category::categories)

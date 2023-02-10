@@ -2,11 +2,11 @@
 
 <!-- PROJECT SHIELDS -->
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[Contributors][contributors-url]
+[Forks][forks-url]
+[Stargazers][stars-url]
+[Issues][issues-url]
+[MIT License][license-url]
 
 <br />
 <div align="center">
@@ -106,6 +106,7 @@ cargo run
   - [X]  根据购物项id数组查询购物项明细接口
   - [X]  删除购物项
 - [ ]  商城后台接口
+  - [X]  后台登录接口
   - [ ]  轮播图列表接口
   - [ ]  修改轮播图信息接口
   - [ ]  新增轮播图接口
@@ -126,7 +127,6 @@ cargo run
   - [ ]  新增首页配置项接口
   - [ ]  批量删除首页配置项信息接口
   - [ ]  获取单条首页配置项信息接口
-  - [ ]  后台登录接口
   - [ ]  修改用户名称接口
   - [ ]  修改密码接口
   - [ ]  获取用户信息接口

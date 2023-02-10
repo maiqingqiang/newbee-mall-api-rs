@@ -1,12 +1,9 @@
-use chrono::{Local, NaiveDateTime};
+use chrono::{NaiveDateTime};
 use diesel::prelude::*;
-use rand::Rng;
-
 use crate::bootstrap::database::PooledConn;
 use crate::models::schema;
 use crate::models::schema::tb_newbee_mall_user::dsl;
 use crate::models::NOT_DELETE;
-use crate::utils::md5_string;
 
 #[derive(Debug, Queryable, Clone, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_user)]
@@ -32,11 +29,6 @@ pub struct NewUser<'a> {
 }
 
 impl User {
-    // 未锁定
-    pub const NOT_LOCK: i8 = 0;
-    // 已锁定
-    pub const LOCKED: i8 = 1;
-
     pub fn create(conn: &mut PooledConn, user: NewUser) -> QueryResult<usize> {
         diesel::insert_into(dsl::tb_newbee_mall_user)
             .values(&user)
@@ -57,24 +49,13 @@ impl User {
     pub fn find_by_login_name_password(
         conn: &mut PooledConn,
         login_name: String,
-        password: String,
+        password_md5: String,
     ) -> QueryResult<Self> {
         dsl::tb_newbee_mall_user
             .filter(dsl::login_name.eq(login_name))
-            .filter(dsl::password_md5.eq(password))
+            .filter(dsl::password_md5.eq(password_md5))
             .filter(dsl::is_deleted.eq(NOT_DELETE))
             .first(conn)
-    }
-
-    pub fn generate_token(&self) -> String {
-        let s = format!(
-            "{}{}{}",
-            Local::now().timestamp_millis(),
-            self.user_id,
-            rand::thread_rng().gen_range(1000..10000)
-        );
-
-        md5_string(s)
     }
 
     pub fn update(conn: &mut PooledConn, user: User) -> QueryResult<usize> {

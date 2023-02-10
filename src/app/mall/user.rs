@@ -38,7 +38,7 @@ pub async fn login(
     web::Json(data): web::Json<LoginRequest>,
 ) -> result::Response {
     let conn = &mut pool.get()?;
-    let token = services::user::login(conn, data)?;
+    let token = services::user::login(conn, data.login_name, data.password_md5)?;
 
     Response::success(token)
 }

@@ -2,6 +2,7 @@ use crate::bootstrap::database::{DatabasePool, PooledConn};
 use crate::bootstrap::error::ApplicationError;
 use crate::models::user::User;
 use crate::models::user_token::UserToken;
+use crate::models::LOCKED;
 use actix_web::body::BoxBody;
 use actix_web::dev::Payload;
 use actix_web::error::ErrorInternalServerError;
@@ -126,7 +127,7 @@ where
 
                         match User::find(conn, user_token.user_id) {
                             Ok(user) => {
-                                if user.locked_flag == User::LOCKED {
+                                if user.locked_flag == LOCKED {
                                     return error_response(
                                         req,
                                         StatusCode::INTERNAL_SERVER_ERROR,

@@ -1,4 +1,5 @@
 pub mod admin_user;
+pub mod admin_user_token;
 pub mod carousel;
 pub mod goods;
 pub mod goods_category;
@@ -19,6 +20,9 @@ pub use goods_category::*;
 
 pub const DELETED: i8 = 1;
 pub const NOT_DELETE: i8 = 0;
+
+pub const LOCKED: i8 = 1;
+pub const NOT_LOCK: i8 = 0;
 
 pub mod functions {
     use diesel::sql_function;
