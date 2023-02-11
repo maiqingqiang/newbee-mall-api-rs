@@ -47,3 +47,20 @@ pub fn login(
 
     Ok(admin_user_token.token)
 }
+
+pub fn update_password(
+    conn: &mut PooledConn,
+    mut admin_user: AdminUser,
+    original_password: String,
+    new_password: String,
+) -> result::Result<()> {
+    if original_password == admin_user.login_password {
+        admin_user.login_password = new_password;
+
+        if AdminUser::update(conn, &admin_user)? > 0 && AdminUserToken::delete(conn, admin_user.admin_user_id)? > 0 {
+            return Ok(());
+        }
+    }
+
+    Err("database error".into())
+}

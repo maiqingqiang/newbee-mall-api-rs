@@ -9,7 +9,8 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
             .service(
                 web::scope("/adminUser")
                     .service(admin_user::login)
-                    .service(admin_user::profile),
+                    .service(admin_user::profile)
+                    .service(admin_user::update_password),
             ),
     );
 }

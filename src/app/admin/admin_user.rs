@@ -1,11 +1,11 @@
-use crate::app::admin::{LoginRequest, ProfileResponse};
+use crate::app::admin::{LoginRequest, ProfileResponse, UpdatePasswordRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::middleware::authentication::AdminIdentity;
 use crate::services;
 use actix_web::web::{Data, Json};
-use actix_web::{get, post};
+use actix_web::{get, post, put};
 
 // 登录接口
 #[post("/login")]
@@ -27,4 +27,18 @@ pub async fn profile(identity: AdminIdentity) -> result::Response {
         nick_name: identity.admin_user.nick_name,
         locked: identity.admin_user.locked,
     })
+}
+
+// 获取用户信息
+#[put("/password")]
+pub async fn update_password(
+    pool: Data<DatabasePool>,
+    identity: AdminIdentity,
+    Json(json): Json<UpdatePasswordRequest>,
+) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    services::admin_user::update_password(conn, identity.admin_user, json.original_password, json.new_password)?;
+
+    Response::success(())
 }

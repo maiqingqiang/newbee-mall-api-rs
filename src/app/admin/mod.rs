@@ -24,3 +24,10 @@ struct ProfileResponse {
     pub nick_name: String,
     pub locked: Option<i8>,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct UpdatePasswordRequest {
+    pub new_password: String,
+    pub original_password: String,
+}

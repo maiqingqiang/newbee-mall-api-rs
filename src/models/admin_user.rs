@@ -4,7 +4,8 @@ use crate::models::NOT_LOCK;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Queryable, Serialize, Deserialize)]
+#[derive(Debug, Clone, Queryable, Serialize, Deserialize, AsChangeset)]
+#[diesel(table_name = crate::models::schema::tb_newbee_mall_admin_user)]
 pub struct AdminUser {
     pub admin_user_id: i64,
     pub login_user_name: String,
@@ -30,5 +31,12 @@ impl AdminUser {
             .filter(dsl::login_password.eq(login_password))
             .filter(dsl::locked.eq(NOT_LOCK))
             .first(conn)
+    }
+
+    pub fn update(conn: &mut PooledConn, admin_user: &Self) -> QueryResult<usize> {
+        diesel::update(dsl::tb_newbee_mall_admin_user)
+            .filter(dsl::admin_user_id.eq(admin_user.admin_user_id))
+            .set(admin_user)
+            .execute(conn)
     }
 }
