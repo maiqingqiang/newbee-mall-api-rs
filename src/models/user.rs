@@ -1,11 +1,12 @@
-use chrono::{NaiveDateTime};
-use diesel::prelude::*;
 use crate::bootstrap::database::PooledConn;
 use crate::models::schema;
 use crate::models::schema::tb_newbee_mall_user::dsl;
 use crate::models::NOT_DELETE;
+use chrono::NaiveDateTime;
+use diesel::prelude::*;
+use serde::Serialize;
 
-#[derive(Debug, Queryable, Clone, AsChangeset)]
+#[derive(Debug, Queryable, Clone, AsChangeset, Serialize)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_user)]
 pub struct User {
     pub user_id: i64,

@@ -40,12 +40,10 @@ pub async fn search(
 // 商品详情接口
 // 传参为商品id
 #[get("/detail/{goods_id}")]
-pub async fn detail(pool: web::Data<DatabasePool>, path: web::Path<u64>) -> result::Response {
+pub async fn detail(pool: web::Data<DatabasePool>, goods_id: web::Path<u64>) -> result::Response {
     let mut pool = pool.get()?;
 
-    let goods_id = path.into_inner();
-
-    let good = services::goods::find(&mut pool, goods_id)?;
+    let good = services::goods::find(&mut pool, goods_id.into_inner())?;
 
     let response = GoodsDetailResponse {
         goods_id: good.goods_id,

@@ -16,10 +16,14 @@ pub async fn start() -> std::io::Result<()> {
             .app_data(web::Data::clone(&data))
             .service(
                 web::scope("/api")
-                    .wrap(crate::middleware::authentication::Authentication)
+                    .wrap(crate::middleware::authentication::MallAuthentication)
                     .configure(routes::mall::register_routes),
             )
-            .service(web::scope("/manage-api").configure(routes::admin::register_routes))
+            .service(
+                web::scope("/manage-api")
+                    .wrap(crate::middleware::authentication::AdminAuthentication)
+                    .configure(routes::admin::register_routes),
+            )
     })
     .bind((config::APP.host.as_str(), config::APP.port))?
     .run()

@@ -6,6 +6,10 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
         // /api/v1/
         web::scope("/v1")
             // /api/v1/adminUser
-            .service(web::scope("/adminUser").service(admin_user::login)),
+            .service(
+                web::scope("/adminUser")
+                    .service(admin_user::login)
+                    .service(admin_user::profile),
+            ),
     );
 }

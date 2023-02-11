@@ -3,7 +3,7 @@ use crate::app::mall::{
     ShoppingCartUpdateRequest,
 };
 use crate::bootstrap::{database::DatabasePool, response::Response, result};
-use crate::middleware::authentication::Identity;
+use crate::middleware::authentication::MallIdentity;
 use crate::models::shopping_cart::NewShoppingCart;
 use crate::services::shopping_cart;
 use actix_web::{
@@ -15,7 +15,7 @@ use actix_web::{
 #[get("/page")]
 pub async fn list_by_page(
     pool: Data<DatabasePool>,
-    identity: Identity,
+    identity: MallIdentity,
     Query(query): Query<ShoppingCartListRequest>,
 ) -> result::Response {
     let conn = &mut pool.get()?;
@@ -36,7 +36,7 @@ pub async fn list_by_page(
 
 // 购物车列表(网页移动端不分页)
 #[get("")]
-pub async fn list(pool: Data<DatabasePool>, identity: Identity) -> result::Response {
+pub async fn list(pool: Data<DatabasePool>, identity: MallIdentity) -> result::Response {
     let conn = &mut pool.get()?;
 
     let response = shopping_cart::list(conn, identity.user.user_id)?;
@@ -49,7 +49,7 @@ pub async fn list(pool: Data<DatabasePool>, identity: Identity) -> result::Respo
 pub async fn save(
     pool: Data<DatabasePool>,
     Json(data): Json<ShoppingCartSaveRequest>,
-    identity: Identity,
+    identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
@@ -70,7 +70,7 @@ pub async fn save(
 pub async fn update(
     pool: Data<DatabasePool>,
     Json(data): Json<ShoppingCartUpdateRequest>,
-    identity: Identity,
+    identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
@@ -89,7 +89,7 @@ pub async fn update(
 pub async fn delete(
     pool: Data<DatabasePool>,
     path: Path<(i64,)>,
-    identity: Identity,
+    identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
@@ -105,7 +105,7 @@ pub async fn delete(
 pub async fn settle(
     pool: Data<DatabasePool>,
     Query(query): Query<ShoppingCartSettleRequest>,
-    identity: Identity,
+    identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 

@@ -3,7 +3,7 @@ use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::constant::INTRODUCE_SIGN;
-use crate::middleware::authentication::Identity;
+use crate::middleware::authentication::MallIdentity;
 use crate::models::user::NewUser;
 use crate::services;
 use crate::utils::md5;
@@ -45,7 +45,7 @@ pub async fn login(
 
 // 登出接口
 #[post("/logout")]
-pub async fn logout(pool: web::Data<DatabasePool>, identity: Identity) -> result::Response {
+pub async fn logout(pool: web::Data<DatabasePool>, identity: MallIdentity) -> result::Response {
     let conn = &mut pool.get()?;
     identity.logout(conn);
 
@@ -54,7 +54,7 @@ pub async fn logout(pool: web::Data<DatabasePool>, identity: Identity) -> result
 
 // 获取用户信息
 #[get("/info")]
-pub async fn info(identity: Identity) -> result::Response {
+pub async fn info(identity: MallIdentity) -> result::Response {
     Response::success(UserInfoResponse {
         nick_name: identity.user.nick_name,
         login_name: identity.user.login_name,
@@ -67,7 +67,7 @@ pub async fn info(identity: Identity) -> result::Response {
 pub async fn edit_info(
     pool: web::Data<DatabasePool>,
     web::Json(data): web::Json<EditUserInfoRequest>,
-    identity: Identity,
+    identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 

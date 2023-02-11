@@ -3,7 +3,7 @@ use crate::models::schema::tb_newbee_mall_user_token::dsl;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
-#[derive(Debug, Queryable, Insertable)]
+#[derive(Debug, Queryable, Insertable, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_user_token)]
 pub struct UserToken {
     pub user_id: i64,
@@ -29,6 +29,13 @@ impl UserToken {
     pub fn delete(conn: &mut PooledConn, user_id: i64) -> QueryResult<usize> {
         diesel::delete(dsl::tb_newbee_mall_user_token)
             .filter(dsl::user_id.eq(user_id))
+            .execute(conn)
+    }
+
+    pub fn update(conn: &mut PooledConn, user_token: &Self) -> QueryResult<usize> {
+        diesel::update(dsl::tb_newbee_mall_user_token)
+            .filter(dsl::user_id.eq(user_token.user_id))
+            .set(user_token)
             .execute(conn)
     }
 }

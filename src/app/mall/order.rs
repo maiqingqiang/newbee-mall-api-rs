@@ -4,7 +4,7 @@ use crate::app::mall::{
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
-use crate::middleware::authentication::Identity;
+use crate::middleware::authentication::MallIdentity;
 use crate::models::order;
 use crate::{get_order_status_str, services};
 use actix_web::{get, post, put, web};
@@ -14,7 +14,7 @@ use actix_web::{get, post, put, web};
 pub async fn save(
     pool: web::Data<DatabasePool>,
     web::Json(json): web::Json<OrderSaveRequest>,
-    identity: Identity,
+    identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
@@ -33,7 +33,7 @@ pub async fn save(
 pub async fn detail(
     pool: web::Data<DatabasePool>,
     order_no: web::Path<String>,
-    identity: Identity,
+    identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
@@ -92,7 +92,7 @@ pub async fn list(
 pub async fn cancel(
     pool: web::Data<DatabasePool>,
     order_no: web::Path<String>,
-    identity: Identity,
+    identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
@@ -106,7 +106,7 @@ pub async fn cancel(
 pub async fn finish(
     pool: web::Data<DatabasePool>,
     order_no: web::Path<String>,
-    identity: Identity,
+    identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 

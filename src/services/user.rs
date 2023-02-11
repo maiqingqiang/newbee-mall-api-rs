@@ -1,4 +1,4 @@
-use crate::app::mall::{EditUserInfoRequest};
+use crate::app::mall::EditUserInfoRequest;
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::error::ApplicationError;
 use crate::bootstrap::result;
@@ -16,7 +16,11 @@ pub fn register(conn: &mut PooledConn, user: NewUser) -> result::Result<usize> {
     };
 }
 
-pub fn login(conn: &mut PooledConn, login_name: String, password_md5: String) -> result::Result<String> {
+pub fn login(
+    conn: &mut PooledConn,
+    login_name: String,
+    password_md5: String,
+) -> result::Result<String> {
     let user = match User::find_by_login_name_password(conn, login_name, password_md5) {
         Ok(user) => user,
         Err(_) => {
@@ -31,7 +35,15 @@ pub fn login(conn: &mut PooledConn, login_name: String, password_md5: String) ->
     let token = generate_token(user.user_id);
 
     let user_token = match UserToken::find(conn, user.user_id) {
-        Ok(user_token) => user_token,
+        Ok(mut user_token) => {
+            user_token.token = token;
+            user_token.update_time = Local::now().naive_local();
+            user_token.expire_time = Local::now().add(Duration::days(2)).naive_local();
+
+            UserToken::update(conn, &user_token)?;
+
+            user_token
+        }
         Err(_) => {
             let user_token = UserToken {
                 user_id: user.user_id,

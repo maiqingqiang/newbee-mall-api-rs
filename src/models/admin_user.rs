@@ -1,10 +1,10 @@
 use crate::bootstrap::database::PooledConn;
 use crate::models::schema::tb_newbee_mall_admin_user::dsl;
-use crate::models::{NOT_LOCK};
+use crate::models::NOT_LOCK;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Queryable, Serialize, Deserialize)]
+#[derive(Debug, Clone, Queryable, Serialize, Deserialize)]
 pub struct AdminUser {
     pub admin_user_id: i64,
     pub login_user_name: String,
