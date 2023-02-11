@@ -21,6 +21,11 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
                     .service(carousel::detail)
                     .service(carousel::delete)
                     .service(carousel::create),
+            )
+            .service(
+                web::scope("/upload")
+                    .service(upload::file)
+                    .service(upload::files),
             ),
     );
 }

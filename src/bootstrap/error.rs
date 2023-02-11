@@ -1,6 +1,8 @@
+use actix_multipart::MultipartError;
 use std::fmt::Debug;
 use std::num::ParseIntError;
 
+use actix_web::error::BlockingError;
 use actix_web::{http::StatusCode, HttpResponse, ResponseError};
 use derive_more::{Display, Error};
 use log::error;
@@ -73,6 +75,24 @@ impl From<actix_web::Error> for ApplicationError {
 
 impl From<ParseIntError> for ApplicationError {
     fn from(error: ParseIntError) -> Self {
+        Self::error(error.to_string())
+    }
+}
+
+impl From<MultipartError> for ApplicationError {
+    fn from(error: MultipartError) -> Self {
+        Self::error(error.to_string())
+    }
+}
+
+impl From<BlockingError> for ApplicationError {
+    fn from(error: BlockingError) -> Self {
+        Self::error(error.to_string())
+    }
+}
+
+impl From<std::io::Error> for ApplicationError {
+    fn from(error: std::io::Error) -> Self {
         Self::error(error.to_string())
     }
 }

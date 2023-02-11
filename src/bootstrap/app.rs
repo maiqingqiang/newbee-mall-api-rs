@@ -1,5 +1,7 @@
+use crate::constant::FILE_UPLOAD_DIC;
 use crate::{config, routes};
 use actix_cors::Cors;
+use actix_files::Files;
 use actix_web::{middleware, web, App, HttpServer};
 use dotenvy::dotenv;
 
@@ -14,6 +16,8 @@ pub async fn start() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .wrap(Cors::permissive())
             .app_data(web::Data::clone(&data))
+            .service(Files::new("/upload", FILE_UPLOAD_DIC).show_files_listing())
+            .service(Files::new("/goods-img", FILE_UPLOAD_DIC).show_files_listing())
             .service(
                 web::scope("/api")
                     .wrap(crate::middleware::authentication::MallAuthentication)

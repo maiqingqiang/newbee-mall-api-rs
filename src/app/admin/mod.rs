@@ -1,5 +1,6 @@
 pub mod admin_user;
 pub mod carousel;
+pub mod upload;
 
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};

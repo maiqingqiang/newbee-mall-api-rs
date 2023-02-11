@@ -24,9 +24,10 @@ pub mod constant {
 
     pub const SHOPPING_CART_ITEM_LIMIT_NUMBER: i32 = 5;
     pub const SHOPPING_CART_ITEM_TOTAL_NUMBER: i32 = 20;
+
+    pub const FILE_UPLOAD_DIC: &str = "./tmp/newbee/upload/";
 }
 
-#[allow(dead_code)]
 fn get_order_status_str(status: i8) -> &'static str {
     match Some(status) {
         Some(0) => "待支付",
