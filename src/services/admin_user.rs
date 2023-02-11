@@ -64,3 +64,19 @@ pub fn update_password(
 
     Err("database error".into())
 }
+
+pub fn update_name(
+    conn: &mut PooledConn,
+    mut admin_user: AdminUser,
+    login_user_name: String,
+    nick_name: String,
+) -> result::Result<()> {
+    admin_user.login_user_name = login_user_name;
+    admin_user.nick_name = nick_name;
+
+    if AdminUser::update(conn, &admin_user)? > 0 {
+        return Ok(());
+    }
+
+    Err("database error".into())
+}

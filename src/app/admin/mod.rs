@@ -31,3 +31,12 @@ pub struct UpdatePasswordRequest {
     pub new_password: String,
     pub original_password: String,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct UpdateNameRequest {
+    #[serde(rename = "loginUserName")]
+    pub login_user_name: String,
+    #[serde(rename = "nickName")]
+    pub nick_name: String,
+}

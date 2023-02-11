@@ -1,4 +1,4 @@
-use crate::app::admin::{LoginRequest, ProfileResponse, UpdatePasswordRequest};
+use crate::app::admin::{LoginRequest, ProfileResponse, UpdateNameRequest, UpdatePasswordRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
@@ -39,6 +39,20 @@ pub async fn update_password(
     let conn = &mut pool.get()?;
 
     services::admin_user::update_password(conn, identity.admin_user, json.original_password, json.new_password)?;
+
+    Response::success(())
+}
+
+// 获取用户信息
+#[put("/name")]
+pub async fn update_name(
+    pool: Data<DatabasePool>,
+    identity: AdminIdentity,
+    Json(json): Json<UpdateNameRequest>,
+) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    services::admin_user::update_name(conn, identity.admin_user, json.login_user_name, json.nick_name)?;
 
     Response::success(())
 }
