@@ -1,4 +1,5 @@
 pub mod admin_user;
+pub mod carousel;
 pub mod goods;
 pub mod goods_category;
 pub mod index;

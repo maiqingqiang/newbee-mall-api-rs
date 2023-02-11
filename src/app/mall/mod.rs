@@ -24,6 +24,15 @@ where
     Ok(Some(s.parse::<T>().unwrap()))
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct GoodsSearchRequest {
+    pub goods_category_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub order_by: Option<String>,
+    pub page_number: Option<i64>,
+}
+
 #[derive(Serialize)]
 #[serde(rename_all(serialize = "camelCase"))]
 struct GoodsSearchResponse {

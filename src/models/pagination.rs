@@ -36,10 +36,10 @@ where
     <T as SelectDsl<CountStar>>::Output: LimitDsl,
 {
     pub fn new(f: F, page: Option<i64>) -> Paginate<F> {
-        let mut page = page.unwrap_or(DEFAULT_PAGE);
-        if page <= 0 {
-            page = DEFAULT_PAGE
-        }
+        let page = match page {
+            Some(0) | None => DEFAULT_PAGE,
+            Some(page) => page,
+        };
 
         Self {
             query_maker: f,
@@ -49,7 +49,12 @@ where
         }
     }
 
-    pub fn per_page(self, per_page: i64) -> Self {
+    pub fn per_page(self, per_page: Option<i64>) -> Self {
+        let per_page = match per_page {
+            Some(0) | None => DEFAULT_PER_PAGE,
+            Some(per_page) => per_page,
+        };
+
         Self {
             per_page,
             offset: (self.page - 1) * per_page,

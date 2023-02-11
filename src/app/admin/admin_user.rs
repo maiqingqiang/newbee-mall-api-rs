@@ -38,7 +38,12 @@ pub async fn update_password(
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
-    services::admin_user::update_password(conn, identity.admin_user, json.original_password, json.new_password)?;
+    services::admin_user::update_password(
+        conn,
+        identity.admin_user,
+        json.original_password,
+        json.new_password,
+    )?;
 
     Response::success(())
 }
@@ -52,7 +57,12 @@ pub async fn update_name(
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
-    services::admin_user::update_name(conn, identity.admin_user, json.login_user_name, json.nick_name)?;
+    services::admin_user::update_name(
+        conn,
+        identity.admin_user,
+        json.login_user_name,
+        json.nick_name,
+    )?;
 
     Response::success(())
 }

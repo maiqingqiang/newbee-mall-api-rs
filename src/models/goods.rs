@@ -6,7 +6,7 @@ use crate::bootstrap::database::PooledConn;
 use crate::models::pagination::Paginator;
 use crate::models::schema::tb_newbee_mall_goods_info::dsl;
 use diesel::prelude::*;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 use super::pagination::Paginate;
 
@@ -40,8 +40,7 @@ pub struct Goods {
     pub update_time: NaiveDateTime,
 }
 
-#[derive(Debug, Deserialize, Clone)]
-#[serde(rename_all(deserialize = "camelCase"))]
+#[derive(Debug)]
 pub struct GoodsFilter {
     pub goods_category_id: Option<i64>,
     pub keyword: Option<String>,

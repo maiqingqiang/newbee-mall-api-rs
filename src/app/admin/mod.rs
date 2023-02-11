@@ -1,5 +1,7 @@
 pub mod admin_user;
+pub mod carousel;
 
+use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -39,4 +41,25 @@ pub struct UpdateNameRequest {
     pub login_user_name: String,
     #[serde(rename = "nickName")]
     pub nick_name: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct CarouselListRequest {
+    pub page_number: Option<i64>,
+    pub page_size: Option<i64>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all(serialize = "camelCase"))]
+pub struct CarouselListResponse {
+    pub carousel_id: i32,
+    pub carousel_url: String,
+    pub redirect_url: String,
+    pub carousel_rank: i32,
+    pub is_deleted: i8,
+    pub create_time: NaiveDateTime,
+    pub create_user: i32,
+    pub update_time: NaiveDateTime,
+    pub update_user: i32,
 }

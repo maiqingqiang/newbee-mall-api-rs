@@ -1,4 +1,4 @@
-use crate::app::mall::{GoodsDetailResponse, GoodsSearchResponse};
+use crate::app::mall::{GoodsDetailResponse, GoodsSearchRequest, GoodsSearchResponse};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
@@ -11,11 +11,19 @@ use actix_web::{get, web};
 #[get("/search")]
 pub async fn search(
     pool: web::Data<DatabasePool>,
-    web::Query(query): web::Query<GoodsFilter>,
+    web::Query(query): web::Query<GoodsSearchRequest>,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
-    let goods_with_paginator = services::goods::list_by_search(conn, &query)?;
+    let goods_with_paginator = services::goods::list_by_search(
+        conn,
+        &GoodsFilter {
+            goods_category_id: query.goods_category_id,
+            keyword: query.keyword,
+            order_by: query.order_by,
+            page_number: query.page_number,
+        },
+    )?;
 
     let mut response: Vec<GoodsSearchResponse> = vec![];
 

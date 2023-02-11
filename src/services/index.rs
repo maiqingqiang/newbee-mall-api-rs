@@ -11,7 +11,7 @@ pub fn index_info(
     conn: &mut PooledConn,
 ) -> result::Result<(Vec<Carousel>, Vec<Goods>, Vec<Goods>, Vec<Goods>)> {
     // 轮播图
-    let carousels = Carousel::list(conn, 5)?;
+    let carousels = Carousel::get_by_limit(conn, 5)?;
 
     // 热销商品
     let good_ids = get_good_ids(conn, INDEX_GOODS_HOT, 4)?;

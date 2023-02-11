@@ -57,7 +57,9 @@ pub fn update_password(
     if original_password == admin_user.login_password {
         admin_user.login_password = new_password;
 
-        if AdminUser::update(conn, &admin_user)? > 0 && AdminUserToken::delete(conn, admin_user.admin_user_id)? > 0 {
+        if AdminUser::update(conn, &admin_user)? > 0
+            && AdminUserToken::delete(conn, admin_user.admin_user_id)? > 0
+        {
             return Ok(());
         }
     }
