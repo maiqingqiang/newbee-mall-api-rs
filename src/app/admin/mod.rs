@@ -52,7 +52,7 @@ pub struct CarouselListRequest {
 
 #[derive(Serialize)]
 #[serde(rename_all(serialize = "camelCase"))]
-pub struct CarouselListResponse {
+pub struct Carousel {
     pub carousel_id: i32,
     pub carousel_url: String,
     pub redirect_url: String,

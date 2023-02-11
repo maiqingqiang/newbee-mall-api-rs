@@ -29,6 +29,13 @@ impl Carousel {
             .order(carousel_rank.desc())
     }
 
+    pub fn find(conn: &mut PooledConn, carousel_id: i32) -> QueryResult<Self> {
+        dsl::tb_newbee_mall_carousel
+            .find(carousel_id)
+            .filter(is_deleted.eq(NOT_DELETE))
+            .first(conn)
+    }
+
     pub fn get_by_limit(conn: &mut PooledConn, limit: i64) -> QueryResult<Vec<Carousel>> {
         Self::filter().limit(limit).load::<Self>(conn)
     }

@@ -15,6 +15,10 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
                     .service(admin_user::update_name),
             )
             // /api/v1/carousels
-            .service(web::scope("/carousels").service(carousel::list)),
+            .service(
+                web::scope("/carousels")
+                    .service(carousel::list)
+                    .service(carousel::detail),
+            ),
     );
 }

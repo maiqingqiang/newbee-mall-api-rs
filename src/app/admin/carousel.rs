@@ -1,10 +1,10 @@
-use crate::app::admin::{CarouselListRequest, CarouselListResponse};
+use crate::app::admin::{Carousel, CarouselListRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::services;
 use actix_web::get;
-use actix_web::web::{Data, Query};
+use actix_web::web::{Data, Path, Query};
 
 // 轮播图列表
 #[get("")]
@@ -20,7 +20,7 @@ pub async fn list(
     let mut response = vec![];
 
     for carousel in carousels_with_paginator.data {
-        response.push(CarouselListResponse {
+        response.push(Carousel {
             carousel_id: carousel.carousel_id,
             carousel_url: carousel.carousel_url,
             redirect_url: carousel.redirect_url,
@@ -39,4 +39,24 @@ pub async fn list(
         carousels_with_paginator.current_page,
         carousels_with_paginator.per_page,
     )
+}
+
+// 获取单条轮播图信息
+#[get("{carousel_id}")]
+pub async fn detail(pool: Data<DatabasePool>, carousel_id: Path<i32>) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    let carousel = services::carousel::detail(conn, carousel_id.into_inner())?;
+
+    Response::success(Carousel {
+        carousel_id: carousel.carousel_id,
+        carousel_url: carousel.carousel_url,
+        redirect_url: carousel.redirect_url,
+        carousel_rank: carousel.carousel_rank,
+        is_deleted: carousel.is_deleted,
+        create_time: carousel.create_time,
+        create_user: carousel.create_user,
+        update_time: carousel.create_time,
+        update_user: carousel.create_user,
+    })
 }
