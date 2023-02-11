@@ -124,12 +124,7 @@ impl ShoppingCart {
             .first(conn)
     }
 
-    pub fn count(
-        conn: &mut PooledConn,
-        user_id: i64,
-    ) -> QueryResult<i64> {
-        Self::filter(user_id)
-            .count()
-            .first(conn)
+    pub fn count(conn: &mut PooledConn, user_id: i64) -> QueryResult<i64> {
+        Self::filter(user_id).count().first(conn)
     }
 }

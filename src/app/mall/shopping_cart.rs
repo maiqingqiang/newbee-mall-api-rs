@@ -6,7 +6,10 @@ use crate::bootstrap::{database::DatabasePool, response::Response, result};
 use crate::middleware::authentication::MallIdentity;
 use crate::models::shopping_cart::NewShoppingCart;
 use crate::services::shopping_cart;
-use actix_web::{delete, get, post, put, web::{Data, Json, Path, Query}};
+use actix_web::{
+    delete, get, post, put,
+    web::{Data, Json, Path, Query},
+};
 
 // 购物车列表(每页默认5条)
 #[get("/page")]
