@@ -5,6 +5,7 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
     s.service(
         // /api/v1/
         web::scope("/v1")
+            .service(admin_user::logout)
             // /api/v1/adminUser
             .service(
                 web::scope("/adminUser")

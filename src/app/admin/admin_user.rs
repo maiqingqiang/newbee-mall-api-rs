@@ -5,7 +5,7 @@ use crate::bootstrap::result;
 use crate::middleware::authentication::AdminIdentity;
 use crate::services;
 use actix_web::web::{Data, Json};
-use actix_web::{get, post, put};
+use actix_web::{delete, get, post, put};
 
 // 登录接口
 #[post("/login")]
@@ -54,5 +54,13 @@ pub async fn update_name(
 
     services::admin_user::update_name(conn, identity.admin_user, json.login_user_name, json.nick_name)?;
 
+    Response::success(())
+}
+
+// 登出接口
+#[delete("/logout")]
+pub async fn logout(pool: Data<DatabasePool>, identity: AdminIdentity) -> result::Response {
+    let conn = &mut pool.get()?;
+    identity.logout(conn);
     Response::success(())
 }
