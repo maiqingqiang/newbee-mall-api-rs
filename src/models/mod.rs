@@ -30,7 +30,7 @@ pub mod functions {
     sql_function! {
         #[aggregate]
         #[sql_name = "last_insert_id"]
-        fn last_insert_id_i64() -> Bigint
+        fn last_insert_id_i32() -> Integer
     }
     sql_function!(fn last_insert_id() -> Bigint);
 }

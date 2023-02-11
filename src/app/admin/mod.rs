@@ -70,3 +70,11 @@ pub struct DeleteCarouselRequest {
     #[serde(rename = "ids")]
     pub carousel_ids: Vec<i32>,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct CreateCarouselRequest {
+    pub carousel_rank: i32,
+    pub carousel_url: String,
+    pub redirect_url: String,
+}

@@ -21,6 +21,18 @@ pub struct Carousel {
     pub update_user: i32,
 }
 
+#[derive(Debug, Insertable)]
+#[diesel(table_name = crate::models::schema::tb_newbee_mall_carousel)]
+pub struct NewCarousel {
+    pub carousel_url: String,
+    pub redirect_url: String,
+    pub carousel_rank: i32,
+    pub create_time: NaiveDateTime,
+    pub create_user: i32,
+}
+
+sql_function!(fn last_insert_id() -> Integer);
+
 impl Carousel {
     fn filter() -> IntoBoxed<'static, dsl::tb_newbee_mall_carousel, Mysql> {
         let query = dsl::tb_newbee_mall_carousel.into_boxed();
@@ -57,5 +69,15 @@ impl Carousel {
                 dsl::update_time.eq(Local::now().naive_local()),
             ))
             .execute(conn)
+    }
+
+    pub fn create(conn: &mut PooledConn, carousel: NewCarousel) -> QueryResult<Self> {
+        diesel::insert_into(dsl::tb_newbee_mall_carousel)
+            .values(&carousel)
+            .execute(conn)?;
+
+        dsl::tb_newbee_mall_carousel
+            .find(last_insert_id())
+            .first(conn)
     }
 }
