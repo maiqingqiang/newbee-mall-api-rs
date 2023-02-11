@@ -21,6 +21,9 @@ pub mod constant {
     pub const DATA_NOT_EXIST: &str = "未查询到记录！";
     pub const REQUEST_FORBIDEN_ERROR: &str = "禁止该操作！";
     pub const NO_PERMISSION_ERROR: &str = "无权限！";
+
+    pub const SHOPPING_CART_ITEM_LIMIT_NUMBER: i32 = 5;
+    pub const SHOPPING_CART_ITEM_TOTAL_NUMBER: i32 = 20;
 }
 
 #[allow(dead_code)]

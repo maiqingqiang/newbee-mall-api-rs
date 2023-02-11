@@ -113,4 +113,23 @@ impl ShoppingCart {
             .find(cart_item_id)
             .first(conn)
     }
+
+    pub fn find_by_user_id_goods_id(
+        conn: &mut PooledConn,
+        user_id: i64,
+        goods_id: i64,
+    ) -> QueryResult<Self> {
+        Self::filter(user_id)
+            .filter(dsl::goods_id.eq(goods_id))
+            .first(conn)
+    }
+
+    pub fn count(
+        conn: &mut PooledConn,
+        user_id: i64,
+    ) -> QueryResult<i64> {
+        Self::filter(user_id)
+            .count()
+            .first(conn)
+    }
 }

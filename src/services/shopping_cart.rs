@@ -8,6 +8,8 @@ use crate::models::shopping_cart::{NewShoppingCart, ShoppingCart};
 use crate::models::Goods;
 use chrono::Local;
 use std::collections::HashMap;
+use diesel::{NotFound};
+use crate::constant::{SHOPPING_CART_ITEM_LIMIT_NUMBER, SHOPPING_CART_ITEM_TOTAL_NUMBER};
 
 pub fn list(conn: &mut PooledConn, user_id: i64) -> result::Result<Vec<ShoppingCartItem>> {
     let shopping_carts = ShoppingCart::get(conn, user_id)?;
@@ -23,7 +25,40 @@ pub fn list_with_page(
     Ok(shopping_carts)
 }
 
-pub fn save(conn: &mut PooledConn, cart: NewShoppingCart) -> result::Result<usize> {
+pub fn save(conn: &mut PooledConn, user_id: i64, cart: NewShoppingCart) -> result::Result<usize> {
+    match ShoppingCart::find_by_user_id_goods_id(conn, user_id, cart.goods_id) {
+        Ok(_) => {
+            return Err("已存在！无需重复添加！".into());
+        }
+        Err(_) => {}
+    }
+
+    Goods::find(conn, cart.goods_id as u64)?;
+
+    match Goods::find(conn, cart.goods_id as u64) {
+        Ok(_) => {}
+        Err(e) => {
+            if e == NotFound {
+                return Err("商品不存在！".into());
+            }
+            return Err(e.into());
+        }
+    }
+
+    if cart.goods_count < 1 {
+        return Err("商品数量不能小于 1 ！".into());
+    }
+
+    if cart.goods_count > SHOPPING_CART_ITEM_LIMIT_NUMBER {
+        return Err("超出单个商品的最大购买数量！".into());
+    }
+
+    let total = ShoppingCart::count(conn, user_id)?;
+
+    if (total as i32) > SHOPPING_CART_ITEM_TOTAL_NUMBER {
+        return Err("超出购物车最大容量！".into());
+    }
+
     Ok(ShoppingCart::create(conn, cart)?)
 }
 

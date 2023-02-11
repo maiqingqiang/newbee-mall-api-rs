@@ -6,10 +6,7 @@ use crate::bootstrap::{database::DatabasePool, response::Response, result};
 use crate::middleware::authentication::MallIdentity;
 use crate::models::shopping_cart::NewShoppingCart;
 use crate::services::shopping_cart;
-use actix_web::{
-    get, post, put,
-    web::{Data, Json, Path, Query},
-};
+use actix_web::{delete, get, post, put, web::{Data, Json, Path, Query}};
 
 // 购物车列表(每页默认5条)
 #[get("/page")]
@@ -55,6 +52,7 @@ pub async fn save(
 
     shopping_cart::save(
         conn,
+        identity.user.user_id,
         NewShoppingCart {
             user_id: identity.user.user_id,
             goods_id: data.goods_id,
@@ -85,17 +83,15 @@ pub async fn update(
 }
 
 // 删除购物项
-#[put("/{newBeeMallShoppingCartItemId}")]
+#[delete("/{cart_item_id}")]
 pub async fn delete(
     pool: Data<DatabasePool>,
-    path: Path<(i64,)>,
+    cart_item_id: Path<i64>,
     identity: MallIdentity,
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
-    let cart_item_id = path.into_inner().0;
-
-    shopping_cart::delete(conn, identity.user.user_id, cart_item_id)?;
+    shopping_cart::delete(conn, identity.user.user_id, cart_item_id.into_inner())?;
 
     Response::success(())
 }
