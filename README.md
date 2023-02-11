@@ -145,7 +145,7 @@ cargo run
 
 ## 版权说明
 
-该项目签署了 GNU 授权许可，详情请参阅 `LICENSE`
+该项目签署了 GNU 授权许可，详情请参阅 [`LICENSE`](LICENSE)
 
 ## 鸣谢
 
