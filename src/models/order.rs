@@ -34,13 +34,6 @@ pub struct NewOrder {
     pub extra_info: String,
 }
 
-#[derive(Debug, AsChangeset)]
-#[diesel(table_name = schema::tb_newbee_mall_order)]
-struct UpdateOrderStatus {
-    pub order_status: i8,
-    pub update_time: NaiveDateTime,
-}
-
 pub struct Filter {
     pub status: Option<i8>,
     pub page_number: Option<i64>,
@@ -107,10 +100,10 @@ impl Order {
     ) -> QueryResult<usize> {
         diesel::update(dsl::tb_newbee_mall_order)
             .filter(dsl::order_id.eq_any(order_ids))
-            .set(&UpdateOrderStatus {
-                order_status,
-                update_time: Local::now().naive_local(),
-            })
+            .set((
+                dsl::order_status.eq(order_status),
+                dsl::update_time.eq(Local::now().naive_local()),
+            ))
             .execute(conn)
     }
 

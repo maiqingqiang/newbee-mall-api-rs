@@ -1,10 +1,10 @@
-use crate::app::admin::{Carousel, CarouselListRequest};
+use crate::app::admin::{Carousel, CarouselListRequest, DeleteCarouselRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::services;
-use actix_web::get;
-use actix_web::web::{Data, Path, Query};
+use actix_web::web::{Data, Json, Path, Query};
+use actix_web::{delete, get};
 
 // 轮播图列表
 #[get("")]
@@ -59,4 +59,17 @@ pub async fn detail(pool: Data<DatabasePool>, carousel_id: Path<i32>) -> result:
         update_time: carousel.create_time,
         update_user: carousel.create_user,
     })
+}
+
+// 批量删除轮播图信息
+#[delete("")]
+pub async fn delete(
+    pool: Data<DatabasePool>,
+    Json(json): Json<DeleteCarouselRequest>,
+) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    services::carousel::delete(conn, json.carousel_ids)?;
+
+    Response::success(())
 }

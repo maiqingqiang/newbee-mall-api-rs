@@ -63,3 +63,10 @@ pub struct Carousel {
     pub update_time: NaiveDateTime,
     pub update_user: i32,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct DeleteCarouselRequest {
+    #[serde(rename = "ids")]
+    pub carousel_ids: Vec<i32>,
+}

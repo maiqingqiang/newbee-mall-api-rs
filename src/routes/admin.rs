@@ -18,7 +18,8 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
             .service(
                 web::scope("/carousels")
                     .service(carousel::list)
-                    .service(carousel::detail),
+                    .service(carousel::detail)
+                    .service(carousel::delete),
             ),
     );
 }
