@@ -2,6 +2,7 @@ pub mod admin_user;
 pub mod carousel;
 pub mod upload;
 
+use crate::app::de_string_to_int;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
@@ -75,6 +76,7 @@ pub struct DeleteCarouselRequest {
 #[derive(Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct CreateCarouselRequest {
+    #[serde(deserialize_with = "de_string_to_int")]
     pub carousel_rank: i32,
     pub carousel_url: String,
     pub redirect_url: String,

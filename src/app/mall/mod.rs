@@ -6,23 +6,9 @@ pub mod shopping_cart;
 pub mod user;
 pub mod user_address;
 
+use crate::app::de_empty_to_none;
 use chrono::NaiveDateTime;
-use serde::{Deserialize, Deserializer, Serialize};
-use std::str::FromStr;
-
-fn deserialize_empty_to_none<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
-where
-    D: Deserializer<'de>,
-    T: FromStr,
-    <T as FromStr>::Err: std::fmt::Debug,
-{
-    let s: &str = Deserialize::deserialize(deserializer)?;
-    if s.is_empty() {
-        return Ok(None);
-    }
-
-    Ok(Some(s.parse::<T>().unwrap()))
-}
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
@@ -238,7 +224,7 @@ pub struct OrderSaveRequest {
 #[derive(Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct OrderListRequest {
-    #[serde(deserialize_with = "deserialize_empty_to_none")]
+    #[serde(deserialize_with = "de_empty_to_none")]
     pub status: Option<i8>,
     pub page_number: Option<i64>,
 }
