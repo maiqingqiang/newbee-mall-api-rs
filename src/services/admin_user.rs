@@ -1,8 +1,8 @@
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::error::ApplicationError;
 use crate::bootstrap::result;
+use crate::models::admin_user::AdminUser;
 use crate::models::admin_user_token::AdminUserToken;
-use crate::models::AdminUser;
 use crate::utils::token::generate_token;
 use chrono::{Duration, Local};
 use std::ops::Add;

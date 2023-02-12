@@ -14,10 +14,6 @@ pub mod user;
 pub mod user_address;
 pub mod user_token;
 
-pub use admin_user::*;
-pub use goods::*;
-pub use goods_category::*;
-
 pub const DELETED: i8 = 1;
 pub const NOT_DELETE: i8 = 0;
 

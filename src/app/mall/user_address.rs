@@ -99,12 +99,23 @@ pub async fn detail(pool: Data<DatabasePool>, address_id: Path<i64>) -> result::
 
 // 获取默认收货地址
 #[get("/default")]
-pub async fn default(pool: web::Data<DatabasePool>, identity: MallIdentity) -> result::Response {
+pub async fn default(pool: Data<DatabasePool>, identity: MallIdentity) -> result::Response {
     let conn = &mut pool.get()?;
 
-    services::user_address::find_default(conn, identity.user.user_id)?;
-
-    Response::success(())
+    match services::user_address::find_default(conn, identity.user.user_id)? {
+        None => Response::success(()),
+        Some(user_address) => Response::success(UserAddressDetailResponse {
+            address_id: user_address.address_id,
+            city_name: user_address.city_name,
+            default_flag: user_address.default_flag,
+            detail_address: user_address.detail_address,
+            province_name: user_address.province_name,
+            region_name: user_address.region_name,
+            user_id: user_address.user_id,
+            user_name: user_address.user_name,
+            user_phone: user_address.user_phone,
+        }),
+    }
 }
 
 // 删除收货地址

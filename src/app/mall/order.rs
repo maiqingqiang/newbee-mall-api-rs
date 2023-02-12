@@ -6,7 +6,8 @@ use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::middleware::authentication::MallIdentity;
 use crate::models::order;
-use crate::{get_order_status_str, services};
+use crate::models::order::OrderStatus;
+use crate::services;
 use actix_web::{get, post, put, web};
 
 // 生成订单接口
@@ -55,11 +56,11 @@ pub async fn detail(
     Response::success(OrderDetailResponse {
         order_no: order.order_no,
         order_status: order.order_status,
-        order_status_string: get_order_status_str(order.order_status).to_string(),
+        order_status_string: OrderStatus::from_i8(order.order_status)?.get_description(),
         pay_status: order.pay_status,
         pay_time: order.pay_time,
         pay_type: order.pay_type,
-        pay_type_string: get_order_status_str(order.pay_type).to_string(),
+        pay_type_string: OrderStatus::from_i8(order.order_status)?.get_description(),
         total_price: order.total_price,
         create_time: order.create_time,
         new_bee_mall_order_item_vos,

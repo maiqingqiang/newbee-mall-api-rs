@@ -2,7 +2,7 @@ use crate::app::mall::{Carousel, IndexGoods, IndexResponse};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
-use crate::models::Goods;
+use crate::models::goods::Goods;
 use crate::services;
 use actix_web::{get, web};
 

@@ -1,4 +1,5 @@
 use crate::bootstrap::database::PooledConn;
+use crate::bootstrap::result;
 use crate::models::pagination::Paginator;
 use crate::models::schema::tb_newbee_mall_order::{dsl, BoxedQuery};
 use crate::models::{schema, DELETED};
@@ -37,6 +38,45 @@ pub struct NewOrder {
 pub struct Filter {
     pub status: Option<i8>,
     pub page_number: Option<i64>,
+}
+
+pub enum OrderStatus {
+    PrePay = 0,
+    Paid = 1,
+    Packaged = 2,
+    Express = 3,
+    Success = 4,
+    ClosedByMalluser = -1,
+    ClosedByExpired = -2,
+    ClosedByJudge = -3,
+}
+impl OrderStatus {
+    pub(crate) fn from_i8(i: i8) -> result::Result<OrderStatus> {
+        match i {
+            0 => Ok(Self::PrePay),
+            1 => Ok(Self::Paid),
+            2 => Ok(Self::Packaged),
+            3 => Ok(Self::Express),
+            4 => Ok(Self::Success),
+            -1 => Ok(Self::ClosedByMalluser),
+            -2 => Ok(Self::ClosedByExpired),
+            -3 => Ok(Self::ClosedByJudge),
+            _ => Err("不支持当前类型".into()),
+        }
+    }
+
+    pub(crate) fn get_description(&self) -> String {
+        match self {
+            Self::PrePay => "待支付".to_string(),
+            Self::Paid => "已支付".to_string(),
+            Self::Packaged => "配货完成".to_string(),
+            Self::Express => "出库成功".to_string(),
+            Self::Success => "交易成功".to_string(),
+            Self::ClosedByMalluser => "手动关闭".to_string(),
+            Self::ClosedByExpired => "超时关闭".to_string(),
+            Self::ClosedByJudge => "商家关闭".to_string(),
+        }
+    }
 }
 
 impl Order {

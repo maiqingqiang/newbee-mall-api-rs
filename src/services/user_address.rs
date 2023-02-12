@@ -2,6 +2,7 @@ use crate::app::mall::UserAddresseUpdateRequest;
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::result;
 use crate::models::user_address::{NewUserAddress, UserAddress};
+use diesel::NotFound;
 
 pub fn list(conn: &mut PooledConn, user_id: i64) -> result::Result<Vec<UserAddress>> {
     Ok(UserAddress::list(conn, user_id)?)
@@ -47,6 +48,15 @@ pub fn delete(conn: &mut PooledConn, address_id: i64) -> result::Result<usize> {
     Ok(UserAddress::delete_by_soft(conn, address_id)?)
 }
 
-pub fn find_default(conn: &mut PooledConn, user_id: i64) -> result::Result<UserAddress> {
-    Ok(UserAddress::find_default(conn, user_id)?)
+pub fn find_default(conn: &mut PooledConn, user_id: i64) -> result::Result<Option<UserAddress>> {
+    match UserAddress::find_default(conn, user_id) {
+        Ok(user_address) => Ok(Some(user_address)),
+        Err(e) => {
+            if e == NotFound {
+                return Ok(None);
+            }
+
+            Err(e.into())
+        }
+    }
 }

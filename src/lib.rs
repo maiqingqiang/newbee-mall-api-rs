@@ -27,18 +27,3 @@ pub mod constant {
 
     pub const FILE_UPLOAD_DIC: &str = "./tmp/newbee/upload/";
 }
-
-fn get_order_status_str(status: i8) -> &'static str {
-    match Some(status) {
-        Some(0) => "待支付",
-        Some(1) => "已支付",
-        Some(2) => "配货完成",
-        Some(3) => "出库成功",
-        Some(4) => "交易成功",
-
-        Some(-1) => "手动关闭",
-        Some(-2) => "超时关闭",
-        Some(-3) => "商家关闭",
-        _ => "error",
-    }
-}

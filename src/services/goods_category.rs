@@ -1,6 +1,6 @@
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::result;
-use crate::models::{GoodsCategory, SecondGoodsCategory, ThirdGoodsCategory};
+use crate::models::goods_category::{GoodsCategory, SecondGoodsCategory, ThirdGoodsCategory};
 
 pub fn collect(
     conn: &mut PooledConn,

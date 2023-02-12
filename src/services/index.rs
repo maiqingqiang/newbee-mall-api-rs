@@ -1,10 +1,10 @@
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::result;
 use crate::models::carousel::Carousel;
+use crate::models::goods::Goods;
 use crate::models::index_config::{
     IndexConfig, INDEX_GOODS_HOT, INDEX_GOODS_NEW, INDEX_GOODS_RECOMMOND,
 };
-use crate::models::Goods;
 
 // 商品搜索
 pub fn index_info(

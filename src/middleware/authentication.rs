@@ -1,9 +1,10 @@
 use crate::bootstrap::database::{DatabasePool, PooledConn};
 use crate::bootstrap::error::ApplicationError;
+use crate::models::admin_user::AdminUser;
 use crate::models::admin_user_token::AdminUserToken;
 use crate::models::user::User;
 use crate::models::user_token::UserToken;
-use crate::models::{AdminUser, LOCKED};
+use crate::models::LOCKED;
 use actix_web::body::BoxBody;
 use actix_web::dev::Payload;
 use actix_web::error::ErrorInternalServerError;
