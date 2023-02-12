@@ -8,7 +8,8 @@ use diesel::mysql::Mysql;
 use diesel::prelude::*;
 use serde::Serialize;
 
-#[derive(Debug, Queryable, Serialize)]
+#[derive(Debug, Queryable, Serialize, AsChangeset)]
+#[diesel(table_name = crate::models::schema::tb_newbee_mall_carousel)]
 pub struct Carousel {
     pub carousel_id: i32,
     pub carousel_url: String,
@@ -79,5 +80,11 @@ impl Carousel {
         dsl::tb_newbee_mall_carousel
             .find(last_insert_id())
             .first(conn)
+    }
+
+    pub fn update(conn: &mut PooledConn, carousel: Self) -> QueryResult<usize> {
+        diesel::update(dsl::tb_newbee_mall_carousel.find(carousel.carousel_id))
+            .set(carousel)
+            .execute(conn)
     }
 }

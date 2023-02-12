@@ -1,5 +1,6 @@
 use crate::app::admin::{
     Carousel, CarouselListRequest, CreateCarouselRequest, DeleteCarouselRequest,
+    UpdateCarouselRequest,
 };
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
@@ -7,7 +8,7 @@ use crate::bootstrap::result;
 use crate::middleware::authentication::AdminIdentity;
 use crate::services;
 use actix_web::web::{Data, Json, Path, Query};
-use actix_web::{delete, get, post};
+use actix_web::{delete, get, post, put};
 
 // 轮播图列表
 #[get("")]
@@ -89,6 +90,25 @@ pub async fn create(
     services::carousel::create(
         conn,
         identity.admin_user.admin_user_id,
+        json.carousel_rank,
+        json.carousel_url,
+        json.redirect_url,
+    )?;
+
+    Response::success(())
+}
+
+// 修改轮播图信息
+#[put("")]
+pub async fn update(
+    pool: Data<DatabasePool>,
+    Json(json): Json<UpdateCarouselRequest>,
+) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    services::carousel::update(
+        conn,
+        json.carousel_id,
         json.carousel_rank,
         json.carousel_url,
         json.redirect_url,

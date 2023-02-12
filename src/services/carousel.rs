@@ -42,3 +42,21 @@ pub fn create(
 
     Ok(())
 }
+
+pub fn update(
+    conn: &mut PooledConn,
+    carousel_id: i32,
+    carousel_rank: i32,
+    carousel_url: String,
+    redirect_url: String,
+) -> result::Result<()> {
+    let mut carousel = Carousel::find(conn, carousel_id)?;
+
+    carousel.carousel_rank = carousel_rank;
+    carousel.carousel_url = carousel_url;
+    carousel.redirect_url = redirect_url;
+
+    Carousel::update(conn, carousel)?;
+
+    Ok(())
+}

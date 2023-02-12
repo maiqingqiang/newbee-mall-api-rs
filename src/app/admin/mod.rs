@@ -81,3 +81,12 @@ pub struct CreateCarouselRequest {
     pub carousel_url: String,
     pub redirect_url: String,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct UpdateCarouselRequest {
+    pub carousel_id: i32,
+    pub carousel_rank: i32,
+    pub carousel_url: String,
+    pub redirect_url: String,
+}
