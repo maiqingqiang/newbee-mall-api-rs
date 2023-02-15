@@ -1,10 +1,10 @@
+pub mod address;
+pub mod categories;
 pub mod goods;
-pub mod goods_category;
 pub mod index;
 pub mod order;
-pub mod shopping_cart;
+pub mod shop_cart;
 pub mod user;
-pub mod user_address;
 
 use crate::app::de_empty_to_none;
 use chrono::NaiveDateTime;

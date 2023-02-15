@@ -1,5 +1,6 @@
 pub mod admin_user;
-pub mod carousel;
+pub mod carousels;
+pub mod categories;
 pub mod upload;
 
 use crate::app::de_string_to_int;
@@ -89,4 +90,28 @@ pub struct UpdateCarouselRequest {
     pub carousel_rank: i32,
     pub carousel_url: String,
     pub redirect_url: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct CategoryListRequest {
+    pub page_number: Option<i64>,
+    pub page_size: Option<i64>,
+    pub category_level: i8,
+    pub parent_id: i64,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all(serialize = "camelCase"))]
+struct CategoryListResponse {
+    pub category_id: i64,
+    pub category_level: i8,
+    pub parent_id: i64,
+    pub category_name: String,
+    pub category_rank: i32,
+    pub is_deleted: i8,
+    pub create_time: NaiveDateTime,
+    pub create_user: i32,
+    pub update_time: NaiveDateTime,
+    pub update_user: Option<i32>,
 }

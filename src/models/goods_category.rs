@@ -3,9 +3,10 @@ use diesel::prelude::*;
 use serde::Serialize;
 
 use crate::bootstrap::database::PooledConn;
+use crate::models::pagination::{Paginate, Paginator};
 use crate::models::schema::tb_newbee_mall_goods_category::dsl::tb_newbee_mall_goods_category;
 use crate::models::schema::tb_newbee_mall_goods_category::{
-    category_level, category_rank, is_deleted,
+    category_level, category_rank, is_deleted, parent_id,
 };
 use crate::models::NOT_DELETE;
 
@@ -94,11 +95,23 @@ pub struct ThirdGoodsCategory {
     pub update_user: Option<i32>,
 }
 
+pub struct GoodsCategoryFilter {
+    pub page_number: Option<i64>,
+    pub page_size: Option<i64>,
+    pub category_level: i8,
+    pub parent_id: i64,
+}
+
 impl GoodsCategory {
     pub fn collect(
         conn: &mut PooledConn,
     ) -> QueryResult<Vec<(Self, Vec<(SecondGoodsCategory, Vec<ThirdGoodsCategory>)>)>> {
-        let first_categorys = Self::list(conn, CATEGORY_LEVEL_FIRST, 10)?;
+        let first_categorys = tb_newbee_mall_goods_category
+            .filter(category_level.eq(CATEGORY_LEVEL_FIRST))
+            .filter(is_deleted.eq(NOT_DELETE))
+            .order(category_rank.desc())
+            .limit(10)
+            .load::<Self>(conn)?;
 
         let second_categorys = SecondGoodsCategory::belonging_to(&first_categorys)
             .filter(category_level.eq(CATEGORY_LEVEL_SECOND))
@@ -124,12 +137,26 @@ impl GoodsCategory {
         Ok(first_categorys.into_iter().zip(second_categorys).collect())
     }
 
-    pub fn list(conn: &mut PooledConn, level: i8, limit: i64) -> QueryResult<Vec<Self>> {
-        tb_newbee_mall_goods_category
-            .filter(category_level.eq(level))
-            .filter(is_deleted.eq(NOT_DELETE))
-            .order(category_rank.desc())
-            .limit(limit)
-            .load::<Self>(conn)
+    pub fn list(
+        conn: &mut PooledConn,
+        filter: GoodsCategoryFilter,
+    ) -> QueryResult<Paginator<Self>> {
+        Paginate::new(
+            || {
+                let mut query = tb_newbee_mall_goods_category.into_boxed();
+
+                if filter.category_level != 0 {
+                    query = query.filter(category_level.eq(filter.category_level))
+                }
+
+                query
+                    .filter(parent_id.eq(filter.parent_id))
+                    .filter(is_deleted.eq(NOT_DELETE))
+                    .order(category_rank.desc())
+            },
+            filter.page_number,
+        )
+        .per_page(filter.page_size)
+        .load_with_paginator(conn)
     }
 }

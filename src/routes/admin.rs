@@ -17,16 +17,17 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
             // /api/v1/carousels
             .service(
                 web::scope("/carousels")
-                    .service(carousel::list)
-                    .service(carousel::detail)
-                    .service(carousel::delete)
-                    .service(carousel::create)
-                    .service(carousel::update),
+                    .service(carousels::list)
+                    .service(carousels::detail)
+                    .service(carousels::delete)
+                    .service(carousels::create)
+                    .service(carousels::update),
             )
             .service(
                 web::scope("/upload")
                     .service(upload::file)
                     .service(upload::files),
-            ),
+            )
+            .service(web::scope("/categories").service(categories::list)),
     );
 }

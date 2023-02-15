@@ -6,7 +6,7 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
         // /api/v1/
         web::scope("/v1")
             .service(goods::search)
-            .service(goods_category::categories)
+            .service(categories::categories)
             .service(index::index)
             .service(order::save)
             .service(order::pay_success)
@@ -24,22 +24,22 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
             // /api/v1/address
             .service(
                 web::scope("/address")
-                    .service(user_address::list)
-                    .service(user_address::update)
-                    .service(user_address::save)
-                    .service(user_address::default)
-                    .service(user_address::detail)
-                    .service(user_address::delete),
+                    .service(address::list)
+                    .service(address::update)
+                    .service(address::save)
+                    .service(address::default)
+                    .service(address::detail)
+                    .service(address::delete),
             )
             // /api/v1/shop-cart
             .service(
                 web::scope("/shop-cart")
-                    .service(shopping_cart::list)
-                    .service(shopping_cart::list_by_page)
-                    .service(shopping_cart::update)
-                    .service(shopping_cart::save)
-                    .service(shopping_cart::delete)
-                    .service(shopping_cart::settle),
+                    .service(shop_cart::list)
+                    .service(shop_cart::list_by_page)
+                    .service(shop_cart::update)
+                    .service(shop_cart::save)
+                    .service(shop_cart::delete)
+                    .service(shop_cart::settle),
             )
             // /api/v1/shop-cart
             .service(
