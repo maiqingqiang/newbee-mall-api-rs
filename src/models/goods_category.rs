@@ -3,6 +3,7 @@ use diesel::prelude::*;
 use serde::Serialize;
 
 use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
 use crate::models::pagination::{Paginate, Paginator};
 use crate::models::schema::tb_newbee_mall_goods_category::dsl::tb_newbee_mall_goods_category;
 use crate::models::schema::tb_newbee_mall_goods_category::{
@@ -106,24 +107,33 @@ impl GoodsCategory {
     pub fn collect(
         conn: &mut PooledConn,
     ) -> QueryResult<Vec<(Self, Vec<(SecondGoodsCategory, Vec<ThirdGoodsCategory>)>)>> {
-        let first_categorys = tb_newbee_mall_goods_category
+        let query = tb_newbee_mall_goods_category
             .filter(category_level.eq(CATEGORY_LEVEL_FIRST))
             .filter(is_deleted.eq(NOT_DELETE))
             .order(category_rank.desc())
-            .limit(10)
-            .load::<Self>(conn)?;
+            .limit(10);
 
-        let second_categorys = SecondGoodsCategory::belonging_to(&first_categorys)
+        debug_sql!(&query);
+
+        let first_categorys = query.load::<Self>(conn)?;
+
+        let query = SecondGoodsCategory::belonging_to(&first_categorys)
             .filter(category_level.eq(CATEGORY_LEVEL_SECOND))
             .filter(is_deleted.eq(NOT_DELETE))
-            .order(category_rank.desc())
-            .load::<SecondGoodsCategory>(conn)?;
+            .order(category_rank.desc());
 
-        let third_categorys = ThirdGoodsCategory::belonging_to(&second_categorys)
+        debug_sql!(&query);
+
+        let second_categorys = query.load::<SecondGoodsCategory>(conn)?;
+
+        let query = ThirdGoodsCategory::belonging_to(&second_categorys)
             .filter(category_level.eq(CATEGORY_LEVEL_THIRD))
             .filter(is_deleted.eq(NOT_DELETE))
-            .order(category_rank.desc())
-            .load::<ThirdGoodsCategory>(conn)?;
+            .order(category_rank.desc());
+
+        debug_sql!(&query);
+
+        let third_categorys = query.load::<ThirdGoodsCategory>(conn)?;
 
         let third_categorys = third_categorys.grouped_by(&second_categorys);
 
@@ -156,7 +166,7 @@ impl GoodsCategory {
             },
             filter.page_number,
         )
-        .per_page(filter.page_size)
-        .load_with_paginator(conn)
+            .per_page(filter.page_size)
+            .load_with_paginator(conn)
     }
 }

@@ -5,6 +5,7 @@ use crate::models::{DELETED, NOT_DELETE};
 use chrono::{Local, NaiveDateTime};
 use diesel::prelude::*;
 use diesel::{QueryDsl, QueryResult, RunQueryDsl};
+use crate::debug_sql;
 
 #[derive(Debug, Queryable, AsChangeset)]
 #[diesel(table_name = schema::tb_newbee_mall_user_address)]
@@ -48,24 +49,33 @@ impl UserAddress {
     pub const DEFAULTED: i8 = 1;
 
     pub fn list(conn: &mut PooledConn, user_id: i64) -> QueryResult<Vec<Self>> {
-        dsl::tb_newbee_mall_user_address
+        let query = dsl::tb_newbee_mall_user_address
             .filter(dsl::user_id.eq(user_id))
             .filter(dsl::is_deleted.eq(NOT_DELETE))
             .limit(20)
-            .order(dsl::address_id.desc())
-            .load::<Self>(conn)
+            .order(dsl::address_id.desc());
+
+        debug_sql!(&query);
+
+        query.load::<Self>(conn)
     }
 
     pub fn create(conn: &mut PooledConn, user_address: NewUserAddress) -> QueryResult<usize> {
-        diesel::insert_into(dsl::tb_newbee_mall_user_address)
-            .values(&user_address)
-            .execute(conn)
+        let query = diesel::insert_into(dsl::tb_newbee_mall_user_address)
+            .values(&user_address);
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 
     pub fn update(conn: &mut PooledConn, user_address: Self) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_user_address.find(user_address.address_id))
-            .set(user_address)
-            .execute(conn)
+        let query = diesel::update(dsl::tb_newbee_mall_user_address.find(user_address.address_id))
+            .set(user_address);
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 
     pub fn update_default_flag(
@@ -73,34 +83,46 @@ impl UserAddress {
         user_id: i64,
         default_flag: i8,
     ) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_user_address)
+        let query = diesel::update(dsl::tb_newbee_mall_user_address)
             .filter(dsl::user_id.eq(user_id))
             .filter(dsl::is_deleted.eq(NOT_DELETE))
             .filter(dsl::default_flag.eq(Self::DEFAULTED))
             .set(UpdateDefaultFlag {
                 default_flag,
                 update_time: Local::now().naive_local(),
-            })
-            .execute(conn)
+            });
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 
     pub fn find(conn: &mut PooledConn, address_id: i64) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_user_address
-            .find(address_id)
-            .first(conn)
+        let query = dsl::tb_newbee_mall_user_address
+            .find(address_id);
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn find_default(conn: &mut PooledConn, user_id: i64) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_user_address
+        let query = dsl::tb_newbee_mall_user_address
             .filter(dsl::user_id.eq(user_id))
             .filter(dsl::is_deleted.eq(NOT_DELETE))
-            .filter(dsl::default_flag.eq(Self::DEFAULTED))
-            .first(conn)
+            .filter(dsl::default_flag.eq(Self::DEFAULTED));
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn delete_by_soft(conn: &mut PooledConn, address_id: i64) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_user_address.find(address_id))
-            .set(dsl::is_deleted.eq(DELETED))
-            .execute(conn)
+        let query = diesel::update(dsl::tb_newbee_mall_user_address.find(address_id))
+            .set(dsl::is_deleted.eq(DELETED));
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 }

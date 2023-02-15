@@ -7,6 +7,7 @@ use crate::models::pagination::Paginator;
 use crate::models::schema::tb_newbee_mall_goods_info::dsl;
 use diesel::prelude::*;
 use serde::Serialize;
+use crate::debug_sql;
 
 use super::pagination::Paginate;
 
@@ -91,18 +92,25 @@ impl Goods {
             },
             filter.page_number,
         )
-        .load_with_paginator(conn)
+            .load_with_paginator(conn)
     }
 
     pub fn find(conn: &mut PooledConn, goods_id: u64) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_goods_info.find(goods_id).first(conn)
+        let query = dsl::tb_newbee_mall_goods_info.find(goods_id);
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn get_by_goods_ids(conn: &mut PooledConn, goods_ids: Vec<u64>) -> QueryResult<Vec<Self>> {
-        dsl::tb_newbee_mall_goods_info
+        let query = dsl::tb_newbee_mall_goods_info
             .filter(dsl::goods_id.eq_any(&goods_ids))
-            .order(dsl::goods_id.eq_any(&goods_ids))
-            .load(conn)
+            .order(dsl::goods_id.eq_any(&goods_ids));
+
+        debug_sql!(&query);
+
+        query.load(conn)
     }
 
     pub fn subtract_stock_num(
@@ -110,12 +118,15 @@ impl Goods {
         goods_id: u64,
         stock_num: u32,
     ) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_goods_info)
+        let query = diesel::update(dsl::tb_newbee_mall_goods_info)
             .filter(dsl::goods_id.eq(goods_id))
             .filter(dsl::goods_sell_status.eq(Self::SELL_STATUS_UP))
             .filter(dsl::stock_num.gt(stock_num))
-            .set(dsl::stock_num.eq(dsl::stock_num - stock_num))
-            .execute(conn)
+            .set(dsl::stock_num.eq(dsl::stock_num - stock_num));
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 
     pub fn add_stock_num(
@@ -123,11 +134,14 @@ impl Goods {
         goods_id: u64,
         stock_num: u32,
     ) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_goods_info)
+        let query = diesel::update(dsl::tb_newbee_mall_goods_info)
             .filter(dsl::goods_id.eq(goods_id))
             .filter(dsl::goods_sell_status.eq(Self::SELL_STATUS_UP))
             .filter(dsl::stock_num.gt(stock_num))
-            .set(dsl::stock_num.eq(dsl::stock_num + stock_num))
-            .execute(conn)
+            .set(dsl::stock_num.eq(dsl::stock_num + stock_num));
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 }

@@ -6,6 +6,7 @@ use crate::models::{schema, DELETED};
 use chrono::{Local, NaiveDateTime};
 use diesel::mysql::Mysql;
 use diesel::prelude::*;
+use crate::debug_sql;
 
 use super::pagination::Paginate;
 
@@ -50,6 +51,7 @@ pub enum OrderStatus {
     ClosedByExpired = -2,
     ClosedByJudge = -3,
 }
+
 impl OrderStatus {
     pub(crate) fn from_i8(i: i8) -> result::Result<OrderStatus> {
         match i {
@@ -90,10 +92,6 @@ impl Order {
         query
     }
 
-    pub fn count(conn: &mut PooledConn, filter: &Filter) -> QueryResult<i64> {
-        Self::filter(filter).count().get_result(conn)
-    }
-
     pub fn get_with_paginator(
         conn: &mut PooledConn,
         filter: &Filter,
@@ -102,35 +100,54 @@ impl Order {
     }
 
     pub fn delete_by_soft(conn: &mut PooledConn, order_id: i64) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_order.find(order_id))
-            .set(dsl::is_deleted.eq(DELETED))
-            .execute(conn)
+        let query = diesel::update(dsl::tb_newbee_mall_order.find(order_id))
+            .set(dsl::is_deleted.eq(DELETED));
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 
     pub fn find(conn: &mut PooledConn, order_id: i64) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_order.find(order_id).first(conn)
+        let query = dsl::tb_newbee_mall_order.find(order_id);
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn find_by_order_no(conn: &mut PooledConn, order_no: String) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_order
-            .filter(dsl::order_no.eq(order_no))
-            .first(conn)
+        let query = dsl::tb_newbee_mall_order
+            .filter(dsl::order_no.eq(order_no));
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn list_by_order_ids(conn: &mut PooledConn, order_ids: Vec<i64>) -> QueryResult<Vec<Self>> {
-        dsl::tb_newbee_mall_order
-            .filter(dsl::order_id.eq_any(order_ids))
-            .load::<Self>(conn)
+        let query = dsl::tb_newbee_mall_order
+            .filter(dsl::order_id.eq_any(order_ids));
+
+        debug_sql!(&query);
+
+        query.load::<Self>(conn)
     }
 
     pub fn create(conn: &mut PooledConn, order: NewOrder) -> QueryResult<Self> {
-        diesel::insert_into(dsl::tb_newbee_mall_order)
-            .values(&order)
-            .execute(conn)?;
+        let query = diesel::insert_into(dsl::tb_newbee_mall_order)
+            .values(&order);
 
-        dsl::tb_newbee_mall_order
-            .find(super::functions::last_insert_id())
-            .first(conn)
+        debug_sql!(&query);
+
+        query.execute(conn)?;
+
+        let query = dsl::tb_newbee_mall_order
+            .find(super::functions::last_insert_id());
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn update_order_status(
@@ -138,19 +155,25 @@ impl Order {
         order_ids: Vec<i64>,
         order_status: i8,
     ) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_order)
+        let query = diesel::update(dsl::tb_newbee_mall_order)
             .filter(dsl::order_id.eq_any(order_ids))
             .set((
                 dsl::order_status.eq(order_status),
                 dsl::update_time.eq(Local::now().naive_local()),
-            ))
-            .execute(conn)
+            ));
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 
     pub fn update(conn: &mut PooledConn, order: Self) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_order)
+        let query = diesel::update(dsl::tb_newbee_mall_order)
             .filter(dsl::order_id.eq(order.order_id))
-            .set(order)
-            .execute(conn)
+            .set(order);
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 }

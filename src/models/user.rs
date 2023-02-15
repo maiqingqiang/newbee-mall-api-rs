@@ -5,6 +5,7 @@ use crate::models::NOT_DELETE;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::Serialize;
+use crate::debug_sql;
 
 #[derive(Debug, Queryable, Clone, AsChangeset, Serialize)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_user)]
@@ -31,20 +32,30 @@ pub struct NewUser<'a> {
 
 impl User {
     pub fn create(conn: &mut PooledConn, user: NewUser) -> QueryResult<usize> {
-        diesel::insert_into(dsl::tb_newbee_mall_user)
-            .values(&user)
-            .execute(conn)
+        let query = diesel::insert_into(dsl::tb_newbee_mall_user)
+            .values(&user);
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 
     pub fn find(conn: &mut PooledConn, user_id: i64) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_user.find(user_id).first(conn)
+        let query = dsl::tb_newbee_mall_user.find(user_id);
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn find_by_login_name(conn: &mut PooledConn, login_name: String) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_user
+        let query = dsl::tb_newbee_mall_user
             .filter(dsl::login_name.eq(login_name))
-            .filter(dsl::is_deleted.eq(NOT_DELETE))
-            .first(conn)
+            .filter(dsl::is_deleted.eq(NOT_DELETE));
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn find_by_login_name_password(
@@ -52,16 +63,22 @@ impl User {
         login_name: String,
         password_md5: String,
     ) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_user
+        let query = dsl::tb_newbee_mall_user
             .filter(dsl::login_name.eq(login_name))
             .filter(dsl::password_md5.eq(password_md5))
-            .filter(dsl::is_deleted.eq(NOT_DELETE))
-            .first(conn)
+            .filter(dsl::is_deleted.eq(NOT_DELETE));
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn update(conn: &mut PooledConn, user: User) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_user.find(user.user_id))
-            .set(&user)
-            .execute(conn)
+        let query = diesel::update(dsl::tb_newbee_mall_user.find(user.user_id))
+            .set(&user);
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 }

@@ -7,6 +7,7 @@ use diesel::dsl::IntoBoxed;
 use diesel::mysql::Mysql;
 use diesel::prelude::*;
 use serde::Serialize;
+use crate::debug_sql;
 
 #[derive(Debug, Queryable, Serialize, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_carousel)]
@@ -43,14 +44,21 @@ impl Carousel {
     }
 
     pub fn find(conn: &mut PooledConn, carousel_id: i32) -> QueryResult<Self> {
-        dsl::tb_newbee_mall_carousel
+        let query = dsl::tb_newbee_mall_carousel
             .find(carousel_id)
-            .filter(dsl::is_deleted.eq(NOT_DELETE))
-            .first(conn)
+            .filter(dsl::is_deleted.eq(NOT_DELETE));
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn get_by_limit(conn: &mut PooledConn, limit: i64) -> QueryResult<Vec<Carousel>> {
-        Self::filter().limit(limit).load::<Self>(conn)
+        let query = Self::filter().limit(limit);
+
+        debug_sql!(&query);
+
+        query.load::<Self>(conn)
     }
 
     pub fn list(
@@ -64,27 +72,39 @@ impl Carousel {
     }
 
     pub fn delete(conn: &mut PooledConn, carousel_ids: Vec<i32>) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_carousel.filter(dsl::carousel_id.eq_any(carousel_ids)))
+        let query = diesel::update(dsl::tb_newbee_mall_carousel.filter(dsl::carousel_id.eq_any(carousel_ids)))
             .set((
                 dsl::is_deleted.eq(DELETED),
                 dsl::update_time.eq(Local::now().naive_local()),
-            ))
-            .execute(conn)
+            ));
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 
     pub fn create(conn: &mut PooledConn, carousel: NewCarousel) -> QueryResult<Self> {
-        diesel::insert_into(dsl::tb_newbee_mall_carousel)
-            .values(&carousel)
-            .execute(conn)?;
+        let query = diesel::insert_into(dsl::tb_newbee_mall_carousel)
+            .values(&carousel);
 
-        dsl::tb_newbee_mall_carousel
-            .find(last_insert_id())
-            .first(conn)
+        debug_sql!(&query);
+
+        query.execute(conn)?;
+
+        let query = dsl::tb_newbee_mall_carousel
+            .find(last_insert_id());
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 
     pub fn update(conn: &mut PooledConn, carousel: Self) -> QueryResult<usize> {
-        diesel::update(dsl::tb_newbee_mall_carousel.find(carousel.carousel_id))
-            .set(carousel)
-            .execute(conn)
+        let query = diesel::update(dsl::tb_newbee_mall_carousel.find(carousel.carousel_id))
+            .set(carousel);
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 }

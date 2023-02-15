@@ -6,6 +6,7 @@ use chrono::NaiveDateTime;
 use diesel::associations::HasTable;
 use diesel::prelude::*;
 use serde::Serialize;
+use crate::debug_sql;
 
 pub const INDEX_SEARCH_HOTS: i8 = 1;
 pub const INDEX_SEARCH_DOWN_HOTS: i8 = 2;
@@ -30,11 +31,14 @@ pub struct IndexConfig {
 
 impl IndexConfig {
     pub fn list(conn: &mut PooledConn, t: i8, limit: i64) -> QueryResult<Vec<IndexConfig>> {
-        tb_newbee_mall_index_config::table()
+        let query = tb_newbee_mall_index_config::table()
             .filter(config_type.eq(t))
             .filter(is_deleted.eq(NOT_DELETE))
             .order(config_rank.desc())
-            .limit(limit)
-            .load::<IndexConfig>(conn)
+            .limit(limit);
+
+        debug_sql!(&query);
+
+        query.load::<IndexConfig>(conn)
     }
 }
