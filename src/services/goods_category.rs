@@ -2,6 +2,7 @@ use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::result;
 use crate::models::goods_category::{
     GoodsCategory, GoodsCategoryFilter, NewGoodsCategory, SecondGoodsCategory, ThirdGoodsCategory,
+    UpdateGoodsCategory,
 };
 use crate::models::pagination::Paginator;
 
@@ -36,4 +37,19 @@ pub fn delete(conn: &mut PooledConn, category_ids: Vec<i64>) -> result::Result<(
     GoodsCategory::delete(conn, category_ids)?;
 
     Ok(())
+}
+
+pub fn update(
+    conn: &mut PooledConn,
+    update_goods_category: UpdateGoodsCategory,
+) -> result::Result<()> {
+    GoodsCategory::find(conn, update_goods_category.category_id)?;
+
+    update_goods_category.update(conn)?;
+
+    Ok(())
+}
+
+pub fn detail(conn: &mut PooledConn, category_id: i64) -> result::Result<GoodsCategory> {
+    Ok(GoodsCategory::find(conn, category_id)?)
 }

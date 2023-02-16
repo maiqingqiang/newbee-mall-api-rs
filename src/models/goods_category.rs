@@ -180,6 +180,16 @@ impl GoodsCategory {
 
         query.execute(conn)
     }
+
+    pub fn find(conn: &mut PooledConn, category_id: i64) -> QueryResult<Self> {
+        let query = dsl::tb_newbee_mall_goods_category
+            .find(category_id)
+            .filter(dsl::is_deleted.eq(NOT_DELETE));
+
+        debug_sql!(&query);
+
+        query.first(conn)
+    }
 }
 
 #[derive(Debug, Insertable)]
@@ -207,5 +217,28 @@ impl NewGoodsCategory {
         debug_sql!(&query);
 
         query.first(conn)
+    }
+}
+
+#[derive(Debug, AsChangeset)]
+#[diesel(table_name = crate::models::schema::tb_newbee_mall_goods_category)]
+pub struct UpdateGoodsCategory {
+    pub category_id: i64,
+    pub category_level: i8,
+    pub parent_id: i64,
+    pub category_name: String,
+    pub category_rank: i32,
+    pub update_time: NaiveDateTime,
+    pub update_user: Option<i32>,
+}
+
+impl UpdateGoodsCategory {
+    pub fn update(self, conn: &mut PooledConn) -> QueryResult<usize> {
+        let query =
+            diesel::update(dsl::tb_newbee_mall_goods_category.find(self.category_id)).set(self);
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 }

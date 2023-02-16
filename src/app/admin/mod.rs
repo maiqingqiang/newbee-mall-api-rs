@@ -132,3 +132,29 @@ pub struct DeleteCategoryRequest {
     #[serde(rename = "ids")]
     pub category_ids: Vec<i64>,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct UpdateCategoryRequest {
+    pub category_id: i64,
+    pub category_level: i8,
+    pub category_name: String,
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    pub category_rank: i32,
+    pub parent_id: i64,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all(serialize = "camelCase"))]
+pub struct Category {
+    pub category_id: i64,
+    pub category_level: i8,
+    pub parent_id: i64,
+    pub category_name: String,
+    pub category_rank: i32,
+    pub is_deleted: i8,
+    pub create_time: NaiveDateTime,
+    pub create_user: i32,
+    pub update_time: NaiveDateTime,
+    pub update_user: Option<i32>,
+}

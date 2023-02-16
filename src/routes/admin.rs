@@ -34,7 +34,9 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
                 web::scope("/categories")
                     .service(categories::list)
                     .service(categories::create)
-                    .service(categories::delete),
+                    .service(categories::delete)
+                    .service(categories::update)
+                    .service(categories::detail),
             ),
     );
 }

@@ -2,6 +2,7 @@ use crate::constant::FILE_UPLOAD_DIC;
 use crate::{config, routes};
 use actix_cors::Cors;
 use actix_files::Files;
+use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use dotenvy::dotenv;
 use tracing_actix_web::TracingLogger;
@@ -14,6 +15,7 @@ pub async fn start() -> std::io::Result<()> {
         let data = web::Data::new(super::database::connection());
 
         App::new()
+            .wrap(Logger::default())
             .wrap(TracingLogger::default())
             .wrap(Cors::permissive())
             .app_data(web::Data::clone(&data))
