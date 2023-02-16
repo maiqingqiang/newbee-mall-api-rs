@@ -6,7 +6,7 @@ pub mod order;
 pub mod shop_cart;
 pub mod user;
 
-use crate::app::de_empty_to_none;
+use crate::app::deserialize_option_number_from_string;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
@@ -224,7 +224,7 @@ pub struct OrderSaveRequest {
 #[derive(Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct OrderListRequest {
-    #[serde(deserialize_with = "de_empty_to_none")]
+    #[serde(deserialize_with = "deserialize_option_number_from_string")]
     pub status: Option<i8>,
     pub page_number: Option<i64>,
 }

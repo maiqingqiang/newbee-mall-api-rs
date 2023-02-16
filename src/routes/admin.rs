@@ -23,11 +23,17 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
                     .service(carousels::create)
                     .service(carousels::update),
             )
+            // /api/v1/upload
             .service(
                 web::scope("/upload")
                     .service(upload::file)
                     .service(upload::files),
             )
-            .service(web::scope("/categories").service(categories::list)),
+            // /api/v1/categories
+            .service(
+                web::scope("/categories")
+                    .service(categories::list)
+                    .service(categories::create),
+            ),
     );
 }

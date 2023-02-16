@@ -3,7 +3,7 @@ pub mod carousels;
 pub mod categories;
 pub mod upload;
 
-use crate::app::de_string_to_int;
+use crate::app::deserialize_number_from_string;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
@@ -77,7 +77,7 @@ pub struct DeleteCarouselRequest {
 #[derive(Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct CreateCarouselRequest {
-    #[serde(deserialize_with = "de_string_to_int")]
+    #[serde(deserialize_with = "deserialize_number_from_string")]
     pub carousel_rank: i32,
     pub carousel_url: String,
     pub redirect_url: String,
@@ -114,4 +114,14 @@ struct CategoryListResponse {
     pub create_user: i32,
     pub update_time: NaiveDateTime,
     pub update_user: Option<i32>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct CreateCategoryRequest {
+    pub category_level: i8,
+    pub category_name: String,
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    pub category_rank: i32,
+    pub parent_id: i64,
 }

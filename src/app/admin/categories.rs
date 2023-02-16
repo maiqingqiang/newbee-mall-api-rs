@@ -1,11 +1,13 @@
-use crate::app::admin::{CategoryListRequest, CategoryListResponse};
+use crate::app::admin::{CategoryListRequest, CategoryListResponse, CreateCategoryRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
-use crate::models::goods_category::GoodsCategoryFilter;
+use crate::middleware::authentication::AdminIdentity;
+use crate::models::goods_category::{GoodsCategoryFilter, NewGoodsCategory};
 use crate::services;
-use actix_web::web::Query;
-use actix_web::{get, web};
+use actix_web::web::{Json, Query};
+use actix_web::{get, post, web};
+use chrono::Local;
 
 // 商品分类列表接口
 #[get("")]
@@ -48,4 +50,29 @@ pub async fn list(
         categories_with_paginator.current_page,
         categories_with_paginator.per_page,
     )
+}
+
+// 新增分类接口
+#[post("")]
+pub async fn create(
+    pool: web::Data<DatabasePool>,
+    Json(json): Json<CreateCategoryRequest>,
+    identity: AdminIdentity,
+) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    let goods_category = services::goods_category::create(
+        conn,
+        NewGoodsCategory {
+            category_id: json.parent_id,
+            category_level: json.category_level,
+            parent_id: json.parent_id,
+            category_name: json.category_name,
+            category_rank: json.category_rank,
+            create_time: Local::now().naive_local(),
+            create_user: identity.admin_user.admin_user_id as i32,
+        },
+    )?;
+
+    Response::success(goods_category)
 }

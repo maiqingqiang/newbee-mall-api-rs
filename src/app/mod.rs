@@ -1,33 +1,49 @@
 use serde::{Deserialize, Deserializer};
+use std::fmt::Display;
 use std::str::FromStr;
 
 pub mod admin;
 pub mod mall;
 
-fn de_empty_to_none<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
+fn deserialize_option_number_from_string<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
 where
     D: Deserializer<'de>,
-    T: FromStr,
-    <T as FromStr>::Err: std::fmt::Debug,
+    T: FromStr + serde::Deserialize<'de>,
+    <T as FromStr>::Err: Display,
 {
-    let s: &str = Deserialize::deserialize(deserializer)?;
-    if s.is_empty() {
-        return Ok(None);
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum NumericOrNull<'a, T> {
+        Str(&'a str),
+        FromStr(T),
+        Null,
     }
 
-    Ok(Some(s.parse::<T>().unwrap()))
+    match NumericOrNull::<T>::deserialize(deserializer)? {
+        NumericOrNull::Str(s) => match s {
+            "" => Ok(None),
+            _ => T::from_str(s).map(Some).map_err(serde::de::Error::custom),
+        },
+        NumericOrNull::FromStr(i) => Ok(Some(i)),
+        NumericOrNull::Null => Ok(None),
+    }
 }
 
-fn de_string_to_int<'de, D, T>(deserializer: D) -> Result<T, D::Error>
+fn deserialize_number_from_string<'de, D, T>(deserializer: D) -> Result<T, D::Error>
 where
     D: Deserializer<'de>,
-    T: FromStr + std::default::Default,
-    <T as FromStr>::Err: std::fmt::Debug,
+    T: FromStr + serde::Deserialize<'de>,
+    <T as FromStr>::Err: Display,
 {
-    let s: &str = Deserialize::deserialize(deserializer)?;
-    if s.is_empty() {
-        return Ok(T::default());
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum StringOrInt<T> {
+        String(String),
+        Number(T),
     }
 
-    Ok(s.parse::<T>().unwrap())
+    match StringOrInt::<T>::deserialize(deserializer)? {
+        StringOrInt::String(s) => s.parse::<T>().map_err(serde::de::Error::custom),
+        StringOrInt::Number(i) => Ok(i),
+    }
 }

@@ -5,9 +5,8 @@ use serde::Serialize;
 use crate::bootstrap::database::PooledConn;
 use crate::debug_sql;
 use crate::models::pagination::{Paginate, Paginator};
-use crate::models::schema::tb_newbee_mall_goods_category::dsl::tb_newbee_mall_goods_category;
 use crate::models::schema::tb_newbee_mall_goods_category::{
-    category_level, category_rank, is_deleted, parent_id,
+    category_level, category_rank, dsl, is_deleted, parent_id,
 };
 use crate::models::NOT_DELETE;
 
@@ -107,7 +106,7 @@ impl GoodsCategory {
     pub fn collect(
         conn: &mut PooledConn,
     ) -> QueryResult<Vec<(Self, Vec<(SecondGoodsCategory, Vec<ThirdGoodsCategory>)>)>> {
-        let query = tb_newbee_mall_goods_category
+        let query = dsl::tb_newbee_mall_goods_category
             .filter(category_level.eq(CATEGORY_LEVEL_FIRST))
             .filter(is_deleted.eq(NOT_DELETE))
             .order(category_rank.desc())
@@ -153,7 +152,7 @@ impl GoodsCategory {
     ) -> QueryResult<Paginator<Self>> {
         Paginate::new(
             || {
-                let mut query = tb_newbee_mall_goods_category.into_boxed();
+                let mut query = dsl::tb_newbee_mall_goods_category.into_boxed();
 
                 if filter.category_level != 0 {
                     query = query.filter(category_level.eq(filter.category_level))
@@ -168,5 +167,33 @@ impl GoodsCategory {
         )
         .per_page(filter.page_size)
         .load_with_paginator(conn)
+    }
+}
+
+#[derive(Debug, Insertable)]
+#[diesel(table_name = crate::models::schema::tb_newbee_mall_goods_category)]
+pub struct NewGoodsCategory {
+    pub category_id: i64,
+    pub category_level: i8,
+    pub parent_id: i64,
+    pub category_name: String,
+    pub category_rank: i32,
+    pub create_time: NaiveDateTime,
+    pub create_user: i32,
+}
+
+impl NewGoodsCategory {
+    pub fn create(self, conn: &mut PooledConn) -> QueryResult<GoodsCategory> {
+        let query = diesel::insert_into(dsl::tb_newbee_mall_goods_category).values(self);
+
+        debug_sql!(&query);
+
+        query.execute(conn)?;
+
+        let query = dsl::tb_newbee_mall_goods_category.find(super::functions::last_insert_id());
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 }
