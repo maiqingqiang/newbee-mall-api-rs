@@ -1,14 +1,12 @@
-use chrono::NaiveDateTime;
+use chrono::{Local, NaiveDateTime};
 use diesel::prelude::*;
 use serde::Serialize;
 
 use crate::bootstrap::database::PooledConn;
 use crate::debug_sql;
 use crate::models::pagination::{Paginate, Paginator};
-use crate::models::schema::tb_newbee_mall_goods_category::{
-    category_level, category_rank, dsl, is_deleted, parent_id,
-};
-use crate::models::NOT_DELETE;
+use crate::models::schema::tb_newbee_mall_goods_category::dsl;
+use crate::models::{DELETED, NOT_DELETE};
 
 pub const CATEGORY_LEVEL_FIRST: i8 = 1;
 pub const CATEGORY_LEVEL_SECOND: i8 = 2;
@@ -107,9 +105,9 @@ impl GoodsCategory {
         conn: &mut PooledConn,
     ) -> QueryResult<Vec<(Self, Vec<(SecondGoodsCategory, Vec<ThirdGoodsCategory>)>)>> {
         let query = dsl::tb_newbee_mall_goods_category
-            .filter(category_level.eq(CATEGORY_LEVEL_FIRST))
-            .filter(is_deleted.eq(NOT_DELETE))
-            .order(category_rank.desc())
+            .filter(dsl::category_level.eq(CATEGORY_LEVEL_FIRST))
+            .filter(dsl::is_deleted.eq(NOT_DELETE))
+            .order(dsl::category_rank.desc())
             .limit(10);
 
         debug_sql!(&query);
@@ -117,18 +115,18 @@ impl GoodsCategory {
         let first_categorys = query.load::<Self>(conn)?;
 
         let query = SecondGoodsCategory::belonging_to(&first_categorys)
-            .filter(category_level.eq(CATEGORY_LEVEL_SECOND))
-            .filter(is_deleted.eq(NOT_DELETE))
-            .order(category_rank.desc());
+            .filter(dsl::category_level.eq(CATEGORY_LEVEL_SECOND))
+            .filter(dsl::is_deleted.eq(NOT_DELETE))
+            .order(dsl::category_rank.desc());
 
         debug_sql!(&query);
 
         let second_categorys = query.load::<SecondGoodsCategory>(conn)?;
 
         let query = ThirdGoodsCategory::belonging_to(&second_categorys)
-            .filter(category_level.eq(CATEGORY_LEVEL_THIRD))
-            .filter(is_deleted.eq(NOT_DELETE))
-            .order(category_rank.desc());
+            .filter(dsl::category_level.eq(CATEGORY_LEVEL_THIRD))
+            .filter(dsl::is_deleted.eq(NOT_DELETE))
+            .order(dsl::category_rank.desc());
 
         debug_sql!(&query);
 
@@ -155,18 +153,32 @@ impl GoodsCategory {
                 let mut query = dsl::tb_newbee_mall_goods_category.into_boxed();
 
                 if filter.category_level != 0 {
-                    query = query.filter(category_level.eq(filter.category_level))
+                    query = query.filter(dsl::category_level.eq(filter.category_level))
                 }
 
                 query
-                    .filter(parent_id.eq(filter.parent_id))
-                    .filter(is_deleted.eq(NOT_DELETE))
-                    .order(category_rank.desc())
+                    .filter(dsl::parent_id.eq(filter.parent_id))
+                    .filter(dsl::is_deleted.eq(NOT_DELETE))
+                    .order(dsl::category_rank.desc())
             },
             filter.page_number,
         )
         .per_page(filter.page_size)
         .load_with_paginator(conn)
+    }
+
+    pub fn delete(conn: &mut PooledConn, category_ids: Vec<i64>) -> QueryResult<usize> {
+        let query = diesel::update(
+            dsl::tb_newbee_mall_goods_category.filter(dsl::category_id.eq_any(category_ids)),
+        )
+        .set((
+            dsl::is_deleted.eq(DELETED),
+            dsl::update_time.eq(Local::now().naive_local()),
+        ));
+
+        debug_sql!(&query);
+
+        query.execute(conn)
     }
 }
 

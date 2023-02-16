@@ -31,3 +31,9 @@ pub fn create(
 ) -> result::Result<GoodsCategory> {
     Ok(goods_category.create(conn)?)
 }
+
+pub fn delete(conn: &mut PooledConn, category_ids: Vec<i64>) -> result::Result<()> {
+    GoodsCategory::delete(conn, category_ids)?;
+
+    Ok(())
+}

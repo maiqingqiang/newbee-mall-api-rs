@@ -125,3 +125,10 @@ pub struct CreateCategoryRequest {
     pub category_rank: i32,
     pub parent_id: i64,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct DeleteCategoryRequest {
+    #[serde(rename = "ids")]
+    pub category_ids: Vec<i64>,
+}

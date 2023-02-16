@@ -1,12 +1,14 @@
-use crate::app::admin::{CategoryListRequest, CategoryListResponse, CreateCategoryRequest};
+use crate::app::admin::{
+    CategoryListRequest, CategoryListResponse, CreateCategoryRequest, DeleteCategoryRequest,
+};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::middleware::authentication::AdminIdentity;
 use crate::models::goods_category::{GoodsCategoryFilter, NewGoodsCategory};
 use crate::services;
-use actix_web::web::{Json, Query};
-use actix_web::{get, post, web};
+use actix_web::web::{Data, Json, Query};
+use actix_web::{delete, get, post, web};
 use chrono::Local;
 
 // 商品分类列表接口
@@ -75,4 +77,17 @@ pub async fn create(
     )?;
 
     Response::success(goods_category)
+}
+
+// 批量删除轮播图信息
+#[delete("")]
+pub async fn delete(
+    pool: Data<DatabasePool>,
+    Json(json): Json<DeleteCategoryRequest>,
+) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    services::goods_category::delete(conn, json.category_ids)?;
+
+    Response::success(())
 }

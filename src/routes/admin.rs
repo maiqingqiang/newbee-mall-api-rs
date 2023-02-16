@@ -33,7 +33,8 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
             .service(
                 web::scope("/categories")
                     .service(categories::list)
-                    .service(categories::create),
+                    .service(categories::create)
+                    .service(categories::delete),
             ),
     );
 }
