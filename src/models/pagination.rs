@@ -1,10 +1,16 @@
-use diesel::{dsl::{count_star, CountStar}, prelude::*, query_dsl::LoadQuery, query_dsl::{
-    methods::{LimitDsl, OffsetDsl},
-    select_dsl::SelectDsl,
-}, debug_query};
 use diesel::backend::Backend;
 use diesel::query_builder::QueryFragment;
-use log::{debug};
+use diesel::{
+    debug_query,
+    dsl::{count_star, CountStar},
+    prelude::*,
+    query_dsl::LoadQuery,
+    query_dsl::{
+        methods::{LimitDsl, OffsetDsl},
+        select_dsl::SelectDsl,
+    },
+};
+use tracing::debug;
 
 const DEFAULT_PER_PAGE: i64 = 10;
 pub const DEFAULT_PAGE: i64 = 1;
@@ -27,11 +33,11 @@ pub struct Paginate<F> {
 }
 
 impl<F, T> Paginate<F>
-    where
-        F: Fn() -> T,
-        T: LimitDsl + SelectDsl<CountStar>,
-        <T as LimitDsl>::Output: OffsetDsl,
-        <T as SelectDsl<CountStar>>::Output: LimitDsl,
+where
+    F: Fn() -> T,
+    T: LimitDsl + SelectDsl<CountStar>,
+    <T as LimitDsl>::Output: OffsetDsl,
+    <T as SelectDsl<CountStar>>::Output: LimitDsl,
 {
     pub fn new(f: F, page: Option<i64>) -> Paginate<F> {
         let page = match page {
@@ -61,42 +67,41 @@ impl<F, T> Paginate<F>
     }
 
     pub fn load_with_total<'a, U, Conn>(self, conn: &mut Conn) -> QueryResult<(Vec<U>, i64)>
-        where
-            Conn: Connection,
-            <Conn as Connection>::Backend: Default,
-            <<Conn as Connection>::Backend as Backend>::QueryBuilder: Default,
-            <<T as LimitDsl>::Output as OffsetDsl>::Output: LoadQuery<'a, Conn, U> + QueryFragment<Conn::Backend>,
-            <T as SelectDsl<CountStar>>::Output: RunQueryDsl<Conn> + QueryFragment<Conn::Backend>,
-            <<T as SelectDsl<CountStar>>::Output as LimitDsl>::Output: LoadQuery<'a, Conn, i64>,
+    where
+        Conn: Connection,
+        <Conn as Connection>::Backend: Default,
+        <<Conn as Connection>::Backend as Backend>::QueryBuilder: Default,
+        <<T as LimitDsl>::Output as OffsetDsl>::Output:
+            LoadQuery<'a, Conn, U> + QueryFragment<Conn::Backend>,
+        <T as SelectDsl<CountStar>>::Output: RunQueryDsl<Conn> + QueryFragment<Conn::Backend>,
+        <<T as SelectDsl<CountStar>>::Output as LimitDsl>::Output: LoadQuery<'a, Conn, i64>,
     {
         let result_query = (self.query_maker)()
             .limit(self.per_page)
             .offset(self.offset);
 
-        debug!("Executing Query: {}",debug_query(&result_query));
+        debug!("Executing Query: {}", debug_query(&result_query));
 
-        let results = result_query
-            .load(conn)?;
+        let results = result_query.load(conn)?;
 
-        let tatol_query = (self.query_maker)()
-            .select(count_star());
+        let tatol_query = (self.query_maker)().select(count_star());
 
-        debug!("Executing Query: {}",debug_query(&tatol_query));
+        debug!("Executing Query: {}", debug_query(&tatol_query));
 
-        let total = tatol_query
-            .first::<i64>(conn)?;
+        let total = tatol_query.first::<i64>(conn)?;
 
         Ok((results, total))
     }
 
     pub fn load_with_paginator<'a, U, Conn>(self, conn: &mut Conn) -> QueryResult<Paginator<U>>
-        where
-            Conn: Connection,
-            <Conn as Connection>::Backend: Default,
-            <<Conn as Connection>::Backend as Backend>::QueryBuilder: Default,
-            <<T as LimitDsl>::Output as OffsetDsl>::Output: LoadQuery<'a, Conn, U> + QueryFragment<Conn::Backend>,
-            <T as SelectDsl<CountStar>>::Output: RunQueryDsl<Conn> + QueryFragment<Conn::Backend>,
-            <<T as SelectDsl<CountStar>>::Output as LimitDsl>::Output: LoadQuery<'a, Conn, i64>,
+    where
+        Conn: Connection,
+        <Conn as Connection>::Backend: Default,
+        <<Conn as Connection>::Backend as Backend>::QueryBuilder: Default,
+        <<T as LimitDsl>::Output as OffsetDsl>::Output:
+            LoadQuery<'a, Conn, U> + QueryFragment<Conn::Backend>,
+        <T as SelectDsl<CountStar>>::Output: RunQueryDsl<Conn> + QueryFragment<Conn::Backend>,
+        <<T as SelectDsl<CountStar>>::Output as LimitDsl>::Output: LoadQuery<'a, Conn, i64>,
     {
         let current_page = self.page;
         let per_page = self.per_page;

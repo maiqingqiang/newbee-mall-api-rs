@@ -1,4 +1,5 @@
 use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
 use crate::models::schema::tb_newbee_mall_index_config::dsl::tb_newbee_mall_index_config;
 use crate::models::schema::tb_newbee_mall_index_config::{config_rank, config_type, is_deleted};
 use crate::models::NOT_DELETE;
@@ -6,7 +7,6 @@ use chrono::NaiveDateTime;
 use diesel::associations::HasTable;
 use diesel::prelude::*;
 use serde::Serialize;
-use crate::debug_sql;
 
 pub const INDEX_SEARCH_HOTS: i8 = 1;
 pub const INDEX_SEARCH_DOWN_HOTS: i8 = 2;

@@ -35,10 +35,10 @@ type DB = diesel::mysql::Mysql;
 
 #[macro_export]
 macro_rules! debug_sql {
-    ( $x:expr ) => {
-        {
-            log::debug!("Executing Query: {}",diesel::debug_query::<crate::models::DB,_>($x).to_string());
-        }
-    };
+    ( $x:expr ) => {{
+        tracing::debug!(
+            "Executing Query: {}",
+            diesel::debug_query::<crate::models::DB, _>($x).to_string()
+        );
+    }};
 }
-

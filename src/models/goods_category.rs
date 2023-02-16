@@ -166,7 +166,7 @@ impl GoodsCategory {
             },
             filter.page_number,
         )
-            .per_page(filter.page_size)
-            .load_with_paginator(conn)
+        .per_page(filter.page_size)
+        .load_with_paginator(conn)
     }
 }

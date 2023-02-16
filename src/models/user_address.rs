@@ -1,11 +1,11 @@
 use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
 use crate::models::schema;
 use crate::models::schema::tb_newbee_mall_user_address::dsl;
 use crate::models::{DELETED, NOT_DELETE};
 use chrono::{Local, NaiveDateTime};
 use diesel::prelude::*;
 use diesel::{QueryDsl, QueryResult, RunQueryDsl};
-use crate::debug_sql;
 
 #[derive(Debug, Queryable, AsChangeset)]
 #[diesel(table_name = schema::tb_newbee_mall_user_address)]
@@ -61,8 +61,7 @@ impl UserAddress {
     }
 
     pub fn create(conn: &mut PooledConn, user_address: NewUserAddress) -> QueryResult<usize> {
-        let query = diesel::insert_into(dsl::tb_newbee_mall_user_address)
-            .values(&user_address);
+        let query = diesel::insert_into(dsl::tb_newbee_mall_user_address).values(&user_address);
 
         debug_sql!(&query);
 
@@ -98,8 +97,7 @@ impl UserAddress {
     }
 
     pub fn find(conn: &mut PooledConn, address_id: i64) -> QueryResult<Self> {
-        let query = dsl::tb_newbee_mall_user_address
-            .find(address_id);
+        let query = dsl::tb_newbee_mall_user_address.find(address_id);
 
         debug_sql!(&query);
 

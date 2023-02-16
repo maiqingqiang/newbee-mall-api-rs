@@ -3,11 +3,11 @@ use diesel::helper_types::IntoBoxed;
 use diesel::mysql::Mysql;
 
 use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
 use crate::models::pagination::Paginator;
 use crate::models::schema::tb_newbee_mall_goods_info::dsl;
 use diesel::prelude::*;
 use serde::Serialize;
-use crate::debug_sql;
 
 use super::pagination::Paginate;
 
@@ -92,7 +92,7 @@ impl Goods {
             },
             filter.page_number,
         )
-            .load_with_paginator(conn)
+        .load_with_paginator(conn)
     }
 
     pub fn find(conn: &mut PooledConn, goods_id: u64) -> QueryResult<Self> {

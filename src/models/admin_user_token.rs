@@ -1,8 +1,8 @@
 use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
 use crate::models::schema::tb_newbee_mall_admin_user_token::dsl;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
-use crate::debug_sql;
 
 #[derive(Debug, Queryable, Insertable, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_admin_user_token)]
@@ -15,8 +15,7 @@ pub struct AdminUserToken {
 
 impl AdminUserToken {
     pub fn find(conn: &mut PooledConn, admin_user_id: i64) -> QueryResult<Self> {
-        let query = dsl::tb_newbee_mall_admin_user_token
-            .find(admin_user_id);
+        let query = dsl::tb_newbee_mall_admin_user_token.find(admin_user_id);
 
         debug_sql!(&query);
 
@@ -24,8 +23,7 @@ impl AdminUserToken {
     }
 
     pub fn find_by_token(conn: &mut PooledConn, token: String) -> QueryResult<Self> {
-        let query = dsl::tb_newbee_mall_admin_user_token
-            .filter(dsl::token.eq(token));
+        let query = dsl::tb_newbee_mall_admin_user_token.filter(dsl::token.eq(token));
 
         debug_sql!(&query);
 
@@ -33,8 +31,8 @@ impl AdminUserToken {
     }
 
     pub fn create(conn: &mut PooledConn, admin_user_token: &AdminUserToken) -> QueryResult<usize> {
-        let query = diesel::insert_into(dsl::tb_newbee_mall_admin_user_token)
-            .values(admin_user_token);
+        let query =
+            diesel::insert_into(dsl::tb_newbee_mall_admin_user_token).values(admin_user_token);
 
         debug_sql!(&query);
 

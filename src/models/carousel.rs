@@ -1,4 +1,5 @@
 use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
 use crate::models::pagination::{Paginate, Paginator};
 use crate::models::schema::tb_newbee_mall_carousel::dsl;
 use crate::models::{DELETED, NOT_DELETE};
@@ -7,7 +8,6 @@ use diesel::dsl::IntoBoxed;
 use diesel::mysql::Mysql;
 use diesel::prelude::*;
 use serde::Serialize;
-use crate::debug_sql;
 
 #[derive(Debug, Queryable, Serialize, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_carousel)]
@@ -72,11 +72,13 @@ impl Carousel {
     }
 
     pub fn delete(conn: &mut PooledConn, carousel_ids: Vec<i32>) -> QueryResult<usize> {
-        let query = diesel::update(dsl::tb_newbee_mall_carousel.filter(dsl::carousel_id.eq_any(carousel_ids)))
-            .set((
-                dsl::is_deleted.eq(DELETED),
-                dsl::update_time.eq(Local::now().naive_local()),
-            ));
+        let query = diesel::update(
+            dsl::tb_newbee_mall_carousel.filter(dsl::carousel_id.eq_any(carousel_ids)),
+        )
+        .set((
+            dsl::is_deleted.eq(DELETED),
+            dsl::update_time.eq(Local::now().naive_local()),
+        ));
 
         debug_sql!(&query);
 
@@ -84,15 +86,13 @@ impl Carousel {
     }
 
     pub fn create(conn: &mut PooledConn, carousel: NewCarousel) -> QueryResult<Self> {
-        let query = diesel::insert_into(dsl::tb_newbee_mall_carousel)
-            .values(&carousel);
+        let query = diesel::insert_into(dsl::tb_newbee_mall_carousel).values(&carousel);
 
         debug_sql!(&query);
 
         query.execute(conn)?;
 
-        let query = dsl::tb_newbee_mall_carousel
-            .find(last_insert_id());
+        let query = dsl::tb_newbee_mall_carousel.find(last_insert_id());
 
         debug_sql!(&query);
 
@@ -100,8 +100,8 @@ impl Carousel {
     }
 
     pub fn update(conn: &mut PooledConn, carousel: Self) -> QueryResult<usize> {
-        let query = diesel::update(dsl::tb_newbee_mall_carousel.find(carousel.carousel_id))
-            .set(carousel);
+        let query =
+            diesel::update(dsl::tb_newbee_mall_carousel.find(carousel.carousel_id)).set(carousel);
 
         debug_sql!(&query);
 

@@ -1,12 +1,12 @@
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::result;
+use crate::debug_sql;
 use crate::models::pagination::Paginator;
 use crate::models::schema::tb_newbee_mall_order::{dsl, BoxedQuery};
 use crate::models::{schema, DELETED};
 use chrono::{Local, NaiveDateTime};
 use diesel::mysql::Mysql;
 use diesel::prelude::*;
-use crate::debug_sql;
 
 use super::pagination::Paginate;
 
@@ -117,8 +117,7 @@ impl Order {
     }
 
     pub fn find_by_order_no(conn: &mut PooledConn, order_no: String) -> QueryResult<Self> {
-        let query = dsl::tb_newbee_mall_order
-            .filter(dsl::order_no.eq(order_no));
+        let query = dsl::tb_newbee_mall_order.filter(dsl::order_no.eq(order_no));
 
         debug_sql!(&query);
 
@@ -126,8 +125,7 @@ impl Order {
     }
 
     pub fn list_by_order_ids(conn: &mut PooledConn, order_ids: Vec<i64>) -> QueryResult<Vec<Self>> {
-        let query = dsl::tb_newbee_mall_order
-            .filter(dsl::order_id.eq_any(order_ids));
+        let query = dsl::tb_newbee_mall_order.filter(dsl::order_id.eq_any(order_ids));
 
         debug_sql!(&query);
 
@@ -135,15 +133,13 @@ impl Order {
     }
 
     pub fn create(conn: &mut PooledConn, order: NewOrder) -> QueryResult<Self> {
-        let query = diesel::insert_into(dsl::tb_newbee_mall_order)
-            .values(&order);
+        let query = diesel::insert_into(dsl::tb_newbee_mall_order).values(&order);
 
         debug_sql!(&query);
 
         query.execute(conn)?;
 
-        let query = dsl::tb_newbee_mall_order
-            .find(super::functions::last_insert_id());
+        let query = dsl::tb_newbee_mall_order.find(super::functions::last_insert_id());
 
         debug_sql!(&query);
 

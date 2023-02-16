@@ -1,11 +1,11 @@
 use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
 use crate::models::schema;
 use crate::models::schema::tb_newbee_mall_user::dsl;
 use crate::models::NOT_DELETE;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::Serialize;
-use crate::debug_sql;
 
 #[derive(Debug, Queryable, Clone, AsChangeset, Serialize)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_user)]
@@ -32,8 +32,7 @@ pub struct NewUser<'a> {
 
 impl User {
     pub fn create(conn: &mut PooledConn, user: NewUser) -> QueryResult<usize> {
-        let query = diesel::insert_into(dsl::tb_newbee_mall_user)
-            .values(&user);
+        let query = diesel::insert_into(dsl::tb_newbee_mall_user).values(&user);
 
         debug_sql!(&query);
 
@@ -74,8 +73,7 @@ impl User {
     }
 
     pub fn update(conn: &mut PooledConn, user: User) -> QueryResult<usize> {
-        let query = diesel::update(dsl::tb_newbee_mall_user.find(user.user_id))
-            .set(&user);
+        let query = diesel::update(dsl::tb_newbee_mall_user.find(user.user_id)).set(&user);
 
         debug_sql!(&query);
 

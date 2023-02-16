@@ -1,4 +1,5 @@
 use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
 use crate::models::pagination::{Paginate, Paginator};
 use crate::models::schema::tb_newbee_mall_shopping_cart_item::dsl;
 use crate::models::{schema, DELETED, NOT_DELETE};
@@ -6,7 +7,6 @@ use chrono::NaiveDateTime;
 use diesel::dsl::IntoBoxed;
 use diesel::mysql::Mysql;
 use diesel::prelude::*;
-use crate::debug_sql;
 
 #[derive(Debug, Queryable, AsChangeset)]
 #[diesel(table_name = schema::tb_newbee_mall_shopping_cart_item)]
@@ -60,8 +60,7 @@ impl ShoppingCart {
     }
 
     pub fn get(conn: &mut PooledConn, user_id: i64) -> QueryResult<Vec<Self>> {
-        let query = Self::filter(user_id)
-            .limit(Self::SHOPPING_CART_TOTAL_NUMBER);
+        let query = Self::filter(user_id).limit(Self::SHOPPING_CART_TOTAL_NUMBER);
 
         debug_sql!(&query);
 
@@ -77,8 +76,8 @@ impl ShoppingCart {
     }
 
     pub fn create(conn: &mut PooledConn, shopping_cart: NewShoppingCart) -> QueryResult<usize> {
-        let query = diesel::insert_into(dsl::tb_newbee_mall_shopping_cart_item)
-            .values(shopping_cart);
+        let query =
+            diesel::insert_into(dsl::tb_newbee_mall_shopping_cart_item).values(shopping_cart);
 
         debug_sql!(&query);
 
@@ -86,8 +85,9 @@ impl ShoppingCart {
     }
 
     pub fn update(conn: &mut PooledConn, shopping_cart: Self) -> QueryResult<usize> {
-        let query = diesel::update(dsl::tb_newbee_mall_shopping_cart_item.find(shopping_cart.cart_item_id))
-            .set(shopping_cart);
+        let query =
+            diesel::update(dsl::tb_newbee_mall_shopping_cart_item.find(shopping_cart.cart_item_id))
+                .set(shopping_cart);
 
         debug_sql!(&query);
 
@@ -116,8 +116,7 @@ impl ShoppingCart {
         user_id: i64,
         cart_item_ids: &Vec<i64>,
     ) -> QueryResult<Vec<Self>> {
-        let query = Self::filter(user_id)
-            .filter(dsl::cart_item_id.eq_any(cart_item_ids));
+        let query = Self::filter(user_id).filter(dsl::cart_item_id.eq_any(cart_item_ids));
 
         debug_sql!(&query);
 
@@ -138,8 +137,7 @@ impl ShoppingCart {
         user_id: i64,
         goods_id: i64,
     ) -> QueryResult<Self> {
-        let query = Self::filter(user_id)
-            .filter(dsl::goods_id.eq(goods_id));
+        let query = Self::filter(user_id).filter(dsl::goods_id.eq(goods_id));
 
         debug_sql!(&query);
 

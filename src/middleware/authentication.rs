@@ -15,12 +15,12 @@ use actix_web::{
 };
 use chrono::Local;
 use futures_util::future::LocalBoxFuture;
-use log::info;
 use serde::Serialize;
 use std::{
     future::{ready, Ready},
     rc::Rc,
 };
+use tracing::info;
 
 const MALL_IGNORE_ROUTES: [&str; 5] = [
     "/api/v1/index-infos",

@@ -5,7 +5,7 @@ use std::num::ParseIntError;
 use actix_web::error::BlockingError;
 use actix_web::{http::StatusCode, HttpResponse, ResponseError};
 use derive_more::{Display, Error};
-use log::error;
+use tracing::error;
 
 use crate::bootstrap::response::Response;
 

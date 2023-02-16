@@ -1,9 +1,9 @@
 use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
 use crate::models::schema::tb_newbee_mall_admin_user::dsl;
-use crate::models::{NOT_LOCK};
+use crate::models::NOT_LOCK;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use crate::debug_sql;
 
 #[derive(Debug, Clone, Queryable, Serialize, Deserialize, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_admin_user)]
@@ -17,8 +17,7 @@ pub struct AdminUser {
 
 impl AdminUser {
     pub fn find(conn: &mut PooledConn, admin_user_id: i64) -> QueryResult<Self> {
-        let query = dsl::tb_newbee_mall_admin_user
-            .find(admin_user_id);
+        let query = dsl::tb_newbee_mall_admin_user.find(admin_user_id);
 
         debug_sql!(&query);
 
