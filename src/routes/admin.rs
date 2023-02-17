@@ -37,6 +37,11 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
                     .service(categories::delete)
                     .service(categories::update)
                     .service(categories::detail),
+            )
+            // /api/v1/categories
+            .service(
+                web::scope("/users")
+                    .service(users::list)
             ),
     );
 }

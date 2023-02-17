@@ -2,6 +2,7 @@ pub mod admin_user;
 pub mod carousels;
 pub mod categories;
 pub mod upload;
+pub mod users;
 
 use crate::app::deserialize_number_from_string;
 use chrono::NaiveDateTime;
@@ -157,4 +158,24 @@ pub struct Category {
     pub create_user: i32,
     pub update_time: NaiveDateTime,
     pub update_user: Option<i32>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct UserListRequest {
+    pub page_number: Option<i64>,
+    pub page_size: Option<i64>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all(serialize = "camelCase"))]
+struct User {
+    pub user_id: i64,
+    pub nick_name: String,
+    pub login_name: String,
+    pub password_md5: String,
+    pub introduce_sign: String,
+    pub is_deleted: i8,
+    pub locked_flag: i8,
+    pub create_time: NaiveDateTime,
 }

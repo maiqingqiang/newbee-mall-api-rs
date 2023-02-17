@@ -6,6 +6,7 @@ use crate::models::NOT_DELETE;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::Serialize;
+use crate::models::pagination::{Paginate, Paginator};
 
 #[derive(Debug, Queryable, Clone, AsChangeset, Serialize)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_user)]
@@ -30,7 +31,16 @@ pub struct NewUser<'a> {
     pub create_time: NaiveDateTime,
 }
 
+pub struct UserFilter {
+    pub page_number: Option<i64>,
+    pub page_size: Option<i64>,
+}
+
 impl User {
+    pub fn get(conn: &mut PooledConn, filter: UserFilter) -> QueryResult<Paginator<Self>> {
+        Paginate::new(|| dsl::tb_newbee_mall_user, filter.page_number).load_with_paginator(conn)
+    }
+
     pub fn create(conn: &mut PooledConn, user: NewUser) -> QueryResult<usize> {
         let query = diesel::insert_into(dsl::tb_newbee_mall_user).values(&user);
 

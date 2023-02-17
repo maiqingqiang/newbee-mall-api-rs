@@ -2,12 +2,13 @@ use crate::app::mall::EditUserInfoRequest;
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::error::ApplicationError;
 use crate::bootstrap::result;
-use crate::models::user::{NewUser, User};
+use crate::models::user::{NewUser, User, UserFilter};
 use crate::models::user_token::UserToken;
 use crate::models::LOCKED;
 use crate::utils::token::generate_token;
 use chrono::{Duration, Local};
 use std::ops::Add;
+use crate::models::pagination::Paginator;
 
 pub fn register(conn: &mut PooledConn, user: NewUser) -> result::Result<usize> {
     return match User::find_by_login_name(conn, user.login_name.clone()) {
@@ -75,4 +76,11 @@ pub fn edit_info(
     }
 
     Ok(User::update(conn, user)?)
+}
+
+pub fn list(
+    conn: &mut PooledConn,
+    filter: UserFilter,
+) -> result::Result<Paginator<User>> {
+    Ok(User::get(conn, filter)?)
 }
