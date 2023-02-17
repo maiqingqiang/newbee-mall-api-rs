@@ -179,3 +179,10 @@ struct User {
     pub locked_flag: i8,
     pub create_time: NaiveDateTime,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct LockUserRequest {
+    #[serde(rename = "ids")]
+    pub user_ids: Vec<i64>,
+}

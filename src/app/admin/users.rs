@@ -1,11 +1,11 @@
-use actix_web::{get};
-use actix_web::web::{Data, Query};
-use crate::app::admin::{User, UserListRequest};
+use crate::app::admin::{LockUserRequest, User, UserListRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::models::user::UserFilter;
 use crate::services;
+use actix_web::web::{Data, Json, Path, Query};
+use actix_web::{get, put};
 
 // 商城注册用户列表
 #[get("")]
@@ -15,10 +15,13 @@ pub async fn list(
 ) -> result::Response {
     let conn = &mut pool.get()?;
 
-    let users_with_paginator = services::user::list(conn, UserFilter {
-        page_number: json.page_number,
-        page_size: json.page_size,
-    })?;
+    let users_with_paginator = services::user::list(
+        conn,
+        UserFilter {
+            page_number: json.page_number,
+            page_size: json.page_size,
+        },
+    )?;
 
     let mut response = vec![];
 
@@ -35,5 +38,24 @@ pub async fn list(
         })
     }
 
-    Response::success_with_page(response, users_with_paginator.total, users_with_paginator.current_page, users_with_paginator.per_page)
+    Response::success_with_page(
+        response,
+        users_with_paginator.total,
+        users_with_paginator.current_page,
+        users_with_paginator.per_page,
+    )
+}
+
+// 用户禁用与解除禁用
+#[put("{locked_flag}")]
+pub async fn lock_user(
+    pool: Data<DatabasePool>,
+    Json(json): Json<LockUserRequest>,
+    locked_flag: Path<i8>,
+) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    services::user::lock_user(conn, json.user_ids, locked_flag.into_inner())?;
+
+    Response::success(())
 }

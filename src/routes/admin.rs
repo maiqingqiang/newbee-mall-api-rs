@@ -42,6 +42,7 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
             .service(
                 web::scope("/users")
                     .service(users::list)
+                    .service(users::lock_user),
             ),
     );
 }

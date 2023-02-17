@@ -1,12 +1,12 @@
 use crate::bootstrap::database::PooledConn;
 use crate::debug_sql;
+use crate::models::pagination::{Paginate, Paginator};
 use crate::models::schema;
 use crate::models::schema::tb_newbee_mall_user::dsl;
 use crate::models::NOT_DELETE;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::Serialize;
-use crate::models::pagination::{Paginate, Paginator};
 
 #[derive(Debug, Queryable, Clone, AsChangeset, Serialize)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_user)]
@@ -84,6 +84,19 @@ impl User {
 
     pub fn update(conn: &mut PooledConn, user: User) -> QueryResult<usize> {
         let query = diesel::update(dsl::tb_newbee_mall_user.find(user.user_id)).set(&user);
+
+        debug_sql!(&query);
+
+        query.execute(conn)
+    }
+
+    pub fn lock_user(
+        conn: &mut PooledConn,
+        user_ids: Vec<i64>,
+        locked_flag: i8,
+    ) -> QueryResult<usize> {
+        let query = diesel::update(dsl::tb_newbee_mall_user.filter(dsl::user_id.eq_any(user_ids)))
+            .set(dsl::locked_flag.eq(locked_flag));
 
         debug_sql!(&query);
 
