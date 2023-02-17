@@ -38,11 +38,13 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
                     .service(categories::update)
                     .service(categories::detail),
             )
-            // /api/v1/categories
+            // /api/v1/users
             .service(
                 web::scope("/users")
                     .service(users::list)
                     .service(users::lock_user),
-            ),
+            )
+            // /api/v1/goods
+            .service(web::scope("/goods").service(goods::list)),
     );
 }

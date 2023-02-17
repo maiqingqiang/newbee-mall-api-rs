@@ -1,11 +1,8 @@
-use chrono::NaiveDateTime;
-use diesel::helper_types::IntoBoxed;
-use diesel::mysql::Mysql;
-
 use crate::bootstrap::database::PooledConn;
 use crate::debug_sql;
 use crate::models::pagination::Paginator;
 use crate::models::schema::tb_newbee_mall_goods_info::dsl;
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::Serialize;
 
@@ -42,11 +39,19 @@ pub struct Goods {
 }
 
 #[derive(Debug)]
-pub struct GoodsFilter {
+pub struct GoodsSearchFilter {
     pub goods_category_id: Option<i64>,
     pub keyword: Option<String>,
     pub order_by: Option<String>,
     pub page_number: Option<i64>,
+}
+
+#[derive(Debug)]
+pub struct GoodsListFilter {
+    pub page_number: Option<i64>,
+    pub page_size: Option<i64>,
+    pub goods_name: Option<String>,
+    pub goods_sell_status: Option<i8>,
 }
 
 impl Goods {
@@ -55,29 +60,26 @@ impl Goods {
     // 商品下架状态
     pub const SELL_STATUS_DOWN: i8 = 1;
 
-    fn filter(filter: &GoodsFilter) -> IntoBoxed<dsl::tb_newbee_mall_goods_info, Mysql> {
-        let mut query = dsl::tb_newbee_mall_goods_info.into_boxed();
-
-        if let Some(keyword) = &filter.keyword {
-            let keyword = format!("%{}%", keyword);
-            query = query.filter(
-                dsl::goods_name
-                    .like(keyword.clone())
-                    .or(dsl::goods_intro.like(keyword)),
-            );
-        }
-
-        if let Some(category_id) = &filter.goods_category_id {
-            query = query.filter(dsl::goods_category_id.eq(category_id));
-        }
-
-        query
-    }
-
-    pub fn get(conn: &mut PooledConn, filter: &GoodsFilter) -> QueryResult<Paginator<Goods>> {
+    pub fn get_by_search(
+        conn: &mut PooledConn,
+        filter: &GoodsSearchFilter,
+    ) -> QueryResult<Paginator<Goods>> {
         Paginate::new(
             || {
-                let mut query = Self::filter(filter);
+                let mut query = dsl::tb_newbee_mall_goods_info.into_boxed();
+
+                if let Some(keyword) = &filter.keyword {
+                    let keyword = format!("%{}%", keyword);
+                    query = query.filter(
+                        dsl::goods_name
+                            .like(keyword.clone())
+                            .or(dsl::goods_intro.like(keyword)),
+                    );
+                }
+
+                if let Some(category_id) = &filter.goods_category_id {
+                    query = query.filter(dsl::goods_category_id.eq(category_id));
+                }
 
                 if let Some(category_id) = &filter.goods_category_id {
                     query = query.filter(dsl::goods_category_id.eq(category_id));
@@ -92,6 +94,27 @@ impl Goods {
             },
             filter.page_number,
         )
+        .load_with_paginator(conn)
+    }
+
+    pub fn get(conn: &mut PooledConn, filter: &GoodsListFilter) -> QueryResult<Paginator<Goods>> {
+        Paginate::new(
+            || {
+                let mut query = dsl::tb_newbee_mall_goods_info.into_boxed();
+
+                if let Some(keyword) = &filter.goods_name {
+                    query = query.filter(dsl::goods_name.like(format!("%{}%", keyword)));
+                }
+
+                if let Some(goods_sell_status) = &filter.goods_sell_status {
+                    query = query.filter(dsl::goods_sell_status.eq(goods_sell_status));
+                }
+
+                query
+            },
+            filter.page_number,
+        )
+        .per_page(filter.page_size)
         .load_with_paginator(conn)
     }
 

@@ -2,7 +2,7 @@ use crate::app::mall::{GoodsDetailResponse, GoodsSearchRequest, GoodsSearchRespo
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
-use crate::models::goods::GoodsFilter;
+use crate::models::goods::GoodsSearchFilter;
 use crate::services;
 use actix_web::{get, web};
 
@@ -17,7 +17,7 @@ pub async fn search(
 
     let goods_with_paginator = services::goods::list_by_search(
         conn,
-        &GoodsFilter {
+        &GoodsSearchFilter {
             goods_category_id: query.goods_category_id,
             keyword: query.keyword,
             order_by: query.order_by,

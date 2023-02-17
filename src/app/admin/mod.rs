@@ -1,6 +1,7 @@
 pub mod admin_user;
 pub mod carousels;
 pub mod categories;
+pub mod goods;
 pub mod upload;
 pub mod users;
 
@@ -185,4 +186,34 @@ struct User {
 pub struct LockUserRequest {
     #[serde(rename = "ids")]
     pub user_ids: Vec<i64>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct GoodsListRequest {
+    pub page_number: Option<i64>,
+    pub page_size: Option<i64>,
+    pub goods_name: Option<String>,
+    pub goods_sell_status: Option<i8>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all(serialize = "camelCase"))]
+pub struct Goods {
+    pub goods_id: u64,
+    pub goods_name: String,
+    pub goods_intro: String,
+    pub goods_category_id: i64,
+    pub goods_cover_img: String,
+    pub goods_carousel: String,
+    pub original_price: i32,
+    pub selling_price: i32,
+    pub stock_num: u32,
+    pub tag: String,
+    pub goods_sell_status: i8,
+    pub create_user: i32,
+    pub create_time: NaiveDateTime,
+    pub update_user: i32,
+    pub update_time: NaiveDateTime,
+    pub goods_detail_content: String,
 }

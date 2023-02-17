@@ -2,15 +2,15 @@ use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::error::ApplicationError;
 use crate::bootstrap::result;
 use crate::models::goods;
-use crate::models::goods::{Goods, GoodsFilter};
+use crate::models::goods::{Goods, GoodsListFilter, GoodsSearchFilter};
 use crate::models::pagination::Paginator;
 
 // 商品搜索
 pub fn list_by_search(
     conn: &mut PooledConn,
-    filter: &GoodsFilter,
+    filter: &GoodsSearchFilter,
 ) -> result::Result<Paginator<Goods>> {
-    Ok(Goods::get(conn, &filter)?)
+    Ok(Goods::get_by_search(conn, &filter)?)
 }
 
 pub fn find(conn: &mut PooledConn, goods_id: u64) -> result::Result<Goods> {
@@ -21,4 +21,9 @@ pub fn find(conn: &mut PooledConn, goods_id: u64) -> result::Result<Goods> {
     }
 
     Ok(good)
+}
+
+// 商品列表
+pub fn list(conn: &mut PooledConn, filter: &GoodsListFilter) -> result::Result<Paginator<Goods>> {
+    Ok(Goods::get(conn, &filter)?)
 }
