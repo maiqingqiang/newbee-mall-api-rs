@@ -25,7 +25,7 @@ English | [简体中文](./README-zh_CN.md)
     -
     <a href="https://github.com/maiqingqiang/newbee-mall-api-rs/issues">Issues</a>
     ·
-    <a href="https://github.com/maiqingqiang/newbee-mall-api-rs/discussions">Discuss</a>
+    <a href="https://github.com/maiqingqiang/newbee-mall-api-rs/discussions">Discussions</a>
     -
   </p>
 </div>
