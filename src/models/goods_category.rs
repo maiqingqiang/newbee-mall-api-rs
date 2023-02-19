@@ -100,10 +100,13 @@ pub struct GoodsCategoryFilter {
     pub parent_id: i64,
 }
 
+pub type CollectGoodsCategory = Vec<(
+    GoodsCategory,
+    Vec<(SecondGoodsCategory, Vec<ThirdGoodsCategory>)>,
+)>;
+
 impl GoodsCategory {
-    pub fn collect(
-        conn: &mut PooledConn,
-    ) -> QueryResult<Vec<(Self, Vec<(SecondGoodsCategory, Vec<ThirdGoodsCategory>)>)>> {
+    pub fn collect(conn: &mut PooledConn) -> QueryResult<CollectGoodsCategory> {
         let query = dsl::tb_newbee_mall_goods_category
             .filter(dsl::category_level.eq(CATEGORY_LEVEL_FIRST))
             .filter(dsl::is_deleted.eq(NOT_DELETE))

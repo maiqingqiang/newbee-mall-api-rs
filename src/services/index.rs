@@ -6,10 +6,10 @@ use crate::models::index_config::{
     IndexConfig, INDEX_GOODS_HOT, INDEX_GOODS_NEW, INDEX_GOODS_RECOMMOND,
 };
 
+pub type IndexInfo = (Vec<Carousel>, Vec<Goods>, Vec<Goods>, Vec<Goods>);
+
 // 商品搜索
-pub fn index_info(
-    conn: &mut PooledConn,
-) -> result::Result<(Vec<Carousel>, Vec<Goods>, Vec<Goods>, Vec<Goods>)> {
+pub fn index_info(conn: &mut PooledConn) -> result::Result<IndexInfo> {
     // 轮播图
     let carousels = Carousel::get_by_limit(conn, 5)?;
 

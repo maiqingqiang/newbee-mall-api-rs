@@ -110,7 +110,7 @@ pub async fn settle(
 
     let cart_item_ids = query
         .cart_item_ids
-        .split(",")
+        .split(',')
         .map(|s| s.parse::<i64>().unwrap())
         .collect();
 

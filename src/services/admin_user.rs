@@ -35,7 +35,7 @@ pub fn login(
         Err(_) => {
             let admin_user_token = AdminUserToken {
                 admin_user_id: admin_user.admin_user_id,
-                token: token.clone(),
+                token,
                 update_time: Local::now().naive_local(),
                 expire_time: Local::now().add(Duration::days(2)).naive_local(),
             };

@@ -10,7 +10,7 @@ use tracing::error;
 use crate::bootstrap::response::Response;
 
 #[derive(Debug, Display, Error)]
-#[display(fmt = "{}", message)]
+#[display(fmt = "{message}")]
 pub struct ApplicationError {
     pub(crate) status: StatusCode,
     pub(crate) message: String,
@@ -36,7 +36,7 @@ impl ResponseError for ApplicationError {
             self.status_code().as_u16(),
             self
         );
-        Response::new(self.status_code(), self.to_string().as_str(), ())
+        Response::to_http_response(self.status_code(), self.to_string().as_str(), ())
     }
 }
 

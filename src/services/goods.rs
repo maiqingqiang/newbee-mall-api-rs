@@ -10,7 +10,7 @@ pub fn list_by_search(
     conn: &mut PooledConn,
     filter: &GoodsSearchFilter,
 ) -> result::Result<Paginator<Goods>> {
-    Ok(Goods::get_by_search(conn, &filter)?)
+    Ok(Goods::get_by_search(conn, filter)?)
 }
 
 pub fn find(conn: &mut PooledConn, goods_id: u64) -> result::Result<Goods> {
@@ -25,5 +25,5 @@ pub fn find(conn: &mut PooledConn, goods_id: u64) -> result::Result<Goods> {
 
 // 商品列表
 pub fn list(conn: &mut PooledConn, filter: &GoodsListFilter) -> result::Result<Paginator<Goods>> {
-    Ok(Goods::get(conn, &filter)?)
+    Ok(Goods::get(conn, filter)?)
 }

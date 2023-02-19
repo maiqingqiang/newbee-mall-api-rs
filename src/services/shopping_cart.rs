@@ -13,7 +13,7 @@ use std::collections::HashMap;
 
 pub fn list(conn: &mut PooledConn, user_id: i64) -> result::Result<Vec<ShoppingCartItem>> {
     let shopping_carts = ShoppingCart::get(conn, user_id)?;
-    Ok(to_shopping_cart_items(conn, shopping_carts)?)
+    to_shopping_cart_items(conn, shopping_carts)
 }
 
 pub fn list_with_page(
@@ -26,11 +26,8 @@ pub fn list_with_page(
 }
 
 pub fn save(conn: &mut PooledConn, user_id: i64, cart: NewShoppingCart) -> result::Result<usize> {
-    match ShoppingCart::find_by_user_id_goods_id(conn, user_id, cart.goods_id) {
-        Ok(_) => {
-            return Err("已存在！无需重复添加！".into());
-        }
-        Err(_) => {}
+    if ShoppingCart::find_by_user_id_goods_id(conn, user_id, cart.goods_id).is_ok() {
+        return Err("已存在！无需重复添加！".into());
     }
 
     Goods::find(conn, cart.goods_id as u64)?;
@@ -142,7 +139,7 @@ pub(crate) fn get_shopping_cart_items(
         return Err("参数异常".into());
     }
 
-    Ok(to_shopping_cart_items(conn, shopping_carts)?)
+    to_shopping_cart_items(conn, shopping_carts)
 }
 
 pub fn to_shopping_cart_items(

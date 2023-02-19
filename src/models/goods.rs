@@ -69,7 +69,7 @@ impl Goods {
                 let mut query = dsl::tb_newbee_mall_goods_info.into_boxed();
 
                 if let Some(keyword) = &filter.keyword {
-                    let keyword = format!("%{}%", keyword);
+                    let keyword = format!("%{keyword}%");
                     query = query.filter(
                         dsl::goods_name
                             .like(keyword.clone())
@@ -103,7 +103,7 @@ impl Goods {
                 let mut query = dsl::tb_newbee_mall_goods_info.into_boxed();
 
                 if let Some(keyword) = &filter.goods_name {
-                    query = query.filter(dsl::goods_name.like(format!("%{}%", keyword)));
+                    query = query.filter(dsl::goods_name.like(format!("%{keyword}%")));
                 }
 
                 if let Some(goods_sell_status) = &filter.goods_sell_status {

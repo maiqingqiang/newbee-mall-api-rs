@@ -13,7 +13,7 @@ pub struct Response<T> {
 }
 
 impl<T: Serialize> Response<T> {
-    pub fn new(status: StatusCode, message: &str, data: T) -> HttpResponse {
+    pub fn to_http_response(status: StatusCode, message: &str, data: T) -> HttpResponse {
         HttpResponse::build(StatusCode::OK).json(Self {
             code: u16::from(status),
             message: message.into(),
@@ -21,7 +21,7 @@ impl<T: Serialize> Response<T> {
         })
     }
     pub fn success_with_message(data: T, message: &str) -> result::Response {
-        Ok(Self::new(StatusCode::OK, message, data))
+        Ok(Self::to_http_response(StatusCode::OK, message, data))
     }
     pub fn success(data: T) -> result::Response {
         Self::success_with_message(data, DEFAULT_SUCCESS_MESSAGE)

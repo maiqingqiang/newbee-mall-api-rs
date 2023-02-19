@@ -1,19 +1,11 @@
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::result;
 use crate::models::goods_category::{
-    GoodsCategory, GoodsCategoryFilter, NewGoodsCategory, SecondGoodsCategory, ThirdGoodsCategory,
-    UpdateGoodsCategory,
+    CollectGoodsCategory, GoodsCategory, GoodsCategoryFilter, NewGoodsCategory, UpdateGoodsCategory,
 };
 use crate::models::pagination::Paginator;
 
-pub fn collect(
-    conn: &mut PooledConn,
-) -> result::Result<
-    Vec<(
-        GoodsCategory,
-        Vec<(SecondGoodsCategory, Vec<ThirdGoodsCategory>)>,
-    )>,
-> {
+pub fn collect(conn: &mut PooledConn) -> result::Result<CollectGoodsCategory> {
     let categories = GoodsCategory::collect(conn)?;
 
     Ok(categories)

@@ -11,10 +11,10 @@ use chrono::{Duration, Local};
 use std::ops::Add;
 
 pub fn register(conn: &mut PooledConn, user: NewUser) -> result::Result<usize> {
-    return match User::find_by_login_name(conn, user.login_name.clone()) {
+    match User::find_by_login_name(conn, user.login_name.clone()) {
         Ok(_) => Err("用户名已存在！".into()),
         Err(_) => Ok(User::create(conn, user)?),
-    };
+    }
 }
 
 pub fn login(
@@ -48,7 +48,7 @@ pub fn login(
         Err(_) => {
             let user_token = UserToken {
                 user_id: user.user_id,
-                token: token.clone(),
+                token,
                 update_time: Local::now().naive_local(),
                 expire_time: Local::now().add(Duration::days(2)).naive_local(),
             };

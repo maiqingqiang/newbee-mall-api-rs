@@ -58,7 +58,7 @@ async fn save_file(field: &mut Field) -> result::Result<String> {
         .get_filename()
         .map_or_else(|| Uuid::new_v4().to_string(), sanitize_filename::sanitize);
 
-    let filepath = format!("{}{}", FILE_UPLOAD_DIC, filename);
+    let filepath = format!("{FILE_UPLOAD_DIC}{filename}");
 
     let mut f = web::block(|| fs::File::create(filepath)).await??;
 

@@ -101,7 +101,7 @@ where
 
         let next = |req: ServiceRequest| -> Self::Future {
             let future = self.service.call(req);
-            Box::pin(async move { Ok(future.await?) })
+            Box::pin(async move { future.await })
         };
 
         for ignore_route in MALL_IGNORE_ROUTES {
@@ -233,7 +233,7 @@ where
 
         let next = |req: ServiceRequest| -> Self::Future {
             let future = self.service.call(req);
-            Box::pin(async move { Ok(future.await?) })
+            Box::pin(async move { future.await })
         };
 
         for ignore_route in ADMIN_IGNORE_ROUTES {

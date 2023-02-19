@@ -62,7 +62,7 @@ pub async fn detail(pool: web::Data<DatabasePool>, goods_id: web::Path<u64>) -> 
         goods_detail_content: good.goods_detail_content,
         original_price: good.original_price,
         tag: good.tag,
-        goods_carousel_list: good.goods_carousel.split("，").collect(),
+        goods_carousel_list: good.goods_carousel.split('，').collect(),
     };
 
     Response::success(response)

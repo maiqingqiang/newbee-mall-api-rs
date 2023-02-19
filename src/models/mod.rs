@@ -38,7 +38,7 @@ macro_rules! debug_sql {
     ( $x:expr ) => {{
         tracing::debug!(
             "Executing Query: {}",
-            diesel::debug_query::<crate::models::DB, _>($x).to_string()
+            diesel::debug_query::<$crate::models::DB, _>($x).to_string()
         );
     }};
 }

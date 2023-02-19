@@ -6,10 +6,10 @@ pub fn gen_random_num(length: i32) -> i32 {
     let random = rand::thread_rng().gen_range(0.1..1.0);
 
     for _ in 0..length {
-        num = num * 10
+        num *= 10
     }
 
-    return (random * num as f64) as i32;
+    (random * num as f64) as i32
 }
 
 pub fn gen_order_no() -> String {
