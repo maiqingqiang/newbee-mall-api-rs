@@ -147,7 +147,7 @@ cargo run
 
 ## 版权说明
 
-该项目签署了 GNU 授权许可，详情请参阅 [LICENSE](LICENSE)
+该项目签署了 GNU General Public License v3.0 授权许可，详情请参阅 [LICENSE](LICENSE)
 
 ## 鸣谢
 
@@ -165,4 +165,4 @@ cargo run
 [issues-shield]: https://img.shields.io/github/issues/maiqingqiang/newbee-mall-api-rs.svg?style=for-the-badge
 [issues-url]: https://github.com/maiqingqiang/newbee-mall-api-rs/issues
 [license-shield]: https://img.shields.io/github/license/maiqingqiang/newbee-mall-api-rs.svg?style=for-the-badge
-[license-url]: https://github.com/maiqingqiang/newbee-mall-api-rs/blob/master/LICENSE.txt
+[license-url]: https://github.com/maiqingqiang/newbee-mall-api-rs/blob/main/LICENSE

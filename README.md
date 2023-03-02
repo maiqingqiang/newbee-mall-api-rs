@@ -83,7 +83,7 @@ cargo run
 
 ## License
 
-Distributed under the GNU License. See [LICENSE](LICENSE) for more information.
+Distributed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for more information.
 
 ## Acknowledgments
 
@@ -101,4 +101,4 @@ Distributed under the GNU License. See [LICENSE](LICENSE) for more information.
 [issues-shield]: https://img.shields.io/github/issues/maiqingqiang/newbee-mall-api-rs.svg?style=for-the-badge
 [issues-url]: https://github.com/maiqingqiang/newbee-mall-api-rs/issues
 [license-shield]: https://img.shields.io/github/license/maiqingqiang/newbee-mall-api-rs.svg?style=for-the-badge
-[license-url]: https://github.com/maiqingqiang/newbee-mall-api-rs/blob/master/LICENSE.txt
+[license-url]: https://github.com/maiqingqiang/newbee-mall-api-rs/blob/main/LICENSE
