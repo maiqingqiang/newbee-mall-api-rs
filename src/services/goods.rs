@@ -31,9 +31,9 @@ pub fn list(conn: &mut PooledConn, filter: &GoodsListFilter) -> result::Result<P
 
 // 修改商品信息接口
 pub fn update(conn: &mut PooledConn, update_goods: &UpdateGoods) -> result::Result<()> {
-    let goods_carousel = GoodsCategory::find(conn, update_goods.goods_category_id)?;
+    let goods_carousel = GoodsCategory::find(conn, update_goods.goods_category_id);
 
-    if goods_carousel.category_level != CATEGORY_LEVEL_THIRD {
+    if goods_carousel.is_err() ||  goods_carousel?.category_level != CATEGORY_LEVEL_THIRD {
         return Err(ApplicationError::from("分类数据异常！"));
     }
 
@@ -55,4 +55,9 @@ pub fn update(conn: &mut PooledConn, update_goods: &UpdateGoods) -> result::Resu
     update_goods.update(conn)?;
 
     Ok(())
+}
+
+pub fn detail(conn: &mut PooledConn, goods_id: u64) -> result::Result<Goods> {
+    let good = Goods::find(conn, goods_id)?;
+    Ok(good)
 }

@@ -224,12 +224,20 @@ pub struct UpdateGoodsRequest {
     pub goods_category_id: i64,
     pub goods_cover_img: String,
     pub goods_detail_content: String,
+    #[serde(deserialize_with = "deserialize_number_from_string")]
     pub goods_id: u64,
     pub goods_intro: String,
     pub goods_name: String,
+    #[serde(deserialize_with = "deserialize_number_from_string")]
     pub goods_sell_status: i8,
     pub original_price: i32,
     pub selling_price: i32,
     pub stock_num: u32,
     pub tag: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all(serialize = "camelCase"))]
+pub struct GoodsDetailResponse {
+    pub goods: Goods
 }
