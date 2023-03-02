@@ -38,6 +38,36 @@ pub struct Goods {
     pub update_time: NaiveDateTime,
 }
 
+#[derive(Debug, AsChangeset)]
+#[diesel(table_name = crate::models::schema::tb_newbee_mall_goods_info)]
+pub struct UpdateGoods {
+    pub goods_id: u64,
+    pub goods_name: String,
+    pub goods_intro: String,
+    pub goods_category_id: i64,
+    pub goods_cover_img: String,
+    pub goods_detail_content: String,
+    pub original_price: i32,
+    pub selling_price: i32,
+    pub stock_num: u32,
+    pub tag: String,
+    pub goods_sell_status: i8,
+    pub update_user: i32,
+    pub update_time: NaiveDateTime,
+}
+
+impl UpdateGoods {
+    pub fn update(&self, conn: &mut PooledConn) -> QueryResult<usize> {
+        let result = diesel::update(dsl::tb_newbee_mall_goods_info)
+            .filter(dsl::goods_id.eq(self.goods_id))
+            .set(self);
+
+        debug_sql!(&result);
+
+        result.execute(conn)
+    }
+}
+
 #[derive(Debug)]
 pub struct GoodsSearchFilter {
     pub goods_category_id: Option<i64>,
@@ -120,6 +150,20 @@ impl Goods {
 
     pub fn find(conn: &mut PooledConn, goods_id: u64) -> QueryResult<Self> {
         let query = dsl::tb_newbee_mall_goods_info.find(goods_id);
+
+        debug_sql!(&query);
+
+        query.first(conn)
+    }
+
+    pub fn find_by_category_id_name(
+        conn: &mut PooledConn,
+        category_id: i64,
+        name: String,
+    ) -> QueryResult<Self> {
+        let query = dsl::tb_newbee_mall_goods_info
+            .filter(dsl::goods_category_id.eq(category_id))
+            .filter(dsl::goods_name.eq(name));
 
         debug_sql!(&query);
 

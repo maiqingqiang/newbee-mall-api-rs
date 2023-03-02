@@ -1,13 +1,15 @@
-use crate::app::admin::{Goods, GoodsListRequest};
+use crate::app::admin::{Goods, GoodsListRequest, UpdateGoodsRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
-use crate::models::goods::GoodsListFilter;
+use crate::middleware::authentication::AdminIdentity;
+use crate::models::goods::{GoodsListFilter, UpdateGoods};
 use crate::services;
-use actix_web::get;
-use actix_web::web::{Data, Query};
+use actix_web::web::{Data, Json, Query};
+use actix_web::{get, put};
+use chrono::Local;
 
-// 用户禁用与解除禁用
+// 商品列表接口
 #[get("list")]
 pub async fn list(
     pool: Data<DatabasePool>,
@@ -54,4 +56,35 @@ pub async fn list(
         goods_with_paginator.current_page,
         goods_with_paginator.per_page,
     )
+}
+
+// 修改商品信息接口
+#[put("update")]
+pub async fn update(
+    pool: Data<DatabasePool>,
+    Json(goods): Json<UpdateGoodsRequest>,
+    identity: AdminIdentity,
+) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    let goods = services::goods::update(
+        conn,
+        &UpdateGoods {
+            goods_id: goods.goods_id,
+            goods_name: goods.goods_name,
+            goods_intro: goods.goods_intro,
+            goods_category_id: goods.goods_category_id,
+            goods_cover_img: goods.goods_cover_img,
+            original_price: goods.original_price,
+            selling_price: goods.selling_price,
+            stock_num: goods.stock_num,
+            tag: goods.tag,
+            goods_sell_status: goods.goods_sell_status,
+            update_user: identity.admin_user.admin_user_id as i32,
+            goods_detail_content: goods.goods_detail_content,
+            update_time: Local::now().naive_local(),
+        },
+    )?;
+
+    Response::success(goods)
 }

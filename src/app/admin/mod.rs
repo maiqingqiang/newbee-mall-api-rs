@@ -217,3 +217,19 @@ pub struct Goods {
     pub update_time: NaiveDateTime,
     pub goods_detail_content: String,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct UpdateGoodsRequest {
+    pub goods_category_id: i64,
+    pub goods_cover_img: String,
+    pub goods_detail_content: String,
+    pub goods_id: u64,
+    pub goods_intro: String,
+    pub goods_name: String,
+    pub goods_sell_status: i8,
+    pub original_price: i32,
+    pub selling_price: i32,
+    pub stock_num: u32,
+    pub tag: String,
+}
