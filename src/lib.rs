@@ -25,5 +25,5 @@ pub mod constant {
     pub const SHOPPING_CART_ITEM_LIMIT_NUMBER: i32 = 5;
     pub const SHOPPING_CART_ITEM_TOTAL_NUMBER: i32 = 20;
 
-    pub const FILE_UPLOAD_DIC: &str = "./tmp/newbee/upload/";
+    pub const FILE_UPLOAD_DIC: &str = "./website/public/upload/";
 }
