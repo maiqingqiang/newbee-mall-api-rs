@@ -59,7 +59,7 @@ git clone https://github.com/maiqingqiang/newbee-mall-api-rs
 cd newbee-mall-api-rs
 
 # Copy .env
-cp cp .env.exmaple .env
+cp .env.exmaple .env
 ```
 
 ### 2. Configure the Database

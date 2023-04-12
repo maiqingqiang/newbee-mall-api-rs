@@ -61,7 +61,7 @@ git clone https://github.com/maiqingqiang/newbee-mall-api-rs
 cd newbee-mall-api-rs
 
 # 生成.env
-cp cp .env.exmaple .env
+cp .env.exmaple .env
 ```
 
 ### 2. 配置数据库
