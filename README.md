@@ -65,7 +65,7 @@ cp .env.exmaple .env
 ### 2. Configure the Database
 
 ```sh
-# Install diesel_cli. If installation fails, refer to the Diesel document: https://diesel.rs/guides/getting-started
+# Install diesel_cli. If installation fails, refer to the Diesel document: https://diesel.rs/guides/getting-started or https://github.com/diesel-rs/diesel/blob/master/guide_drafts/backend_installation.md
 cargo install diesel_cli
 
 # Run the database migration. Before running, make sure `.env` is configured with `DATABASE_URL`

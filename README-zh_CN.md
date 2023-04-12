@@ -67,7 +67,7 @@ cp .env.exmaple .env
 ### 2. 配置数据库
 
 ```sh
-# 安装 diesel_cli。如果安装失败，可以查看 Diesel 文档: https://diesel.rs/guides/getting-started
+# 安装 diesel_cli。如果安装失败，可以查看 Diesel 文档: https://diesel.rs/guides/getting-started or https://github.com/diesel-rs/diesel/blob/master/guide_drafts/backend_installation.md
 cargo install diesel_cli
 
 # 数据库迁移，运行前请确认`.env`是否配置好`DATABASE_URL`
