@@ -1,10 +1,11 @@
+use actix_web::{get, web};
+
 use crate::app::mall::{Carousel, IndexGoods, IndexResponse};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::models::goods::Goods;
 use crate::services;
-use actix_web::{get, web};
 
 // 获取首页数据
 // 轮播图、新品、推荐等

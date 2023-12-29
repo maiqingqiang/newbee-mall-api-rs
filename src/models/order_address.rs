@@ -1,8 +1,9 @@
+use diesel::prelude::*;
+
 use crate::bootstrap::database::PooledConn;
 use crate::debug_sql;
 use crate::models::schema;
 use crate::models::schema::tb_newbee_mall_order_address::dsl;
-use diesel::prelude::*;
 
 #[derive(Debug, Queryable, AsChangeset, Insertable)]
 #[diesel(table_name = schema::tb_newbee_mall_order_address)]

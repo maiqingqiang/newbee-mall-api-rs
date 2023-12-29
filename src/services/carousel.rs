@@ -1,8 +1,9 @@
+use chrono::Local;
+
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::result;
 use crate::models::carousel::{Carousel, NewCarousel};
 use crate::models::pagination::Paginator;
-use chrono::Local;
 
 pub fn list(
     conn: &mut PooledConn,

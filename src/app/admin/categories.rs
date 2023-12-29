@@ -1,3 +1,7 @@
+use actix_web::web::{Data, Json, Path, Query};
+use actix_web::{delete, get, post, put, web};
+use chrono::Local;
+
 use crate::app::admin::{
     Category, CategoryListRequest, CategoryListResponse, CreateCategoryRequest,
     DeleteCategoryRequest, UpdateCategoryRequest,
@@ -8,9 +12,6 @@ use crate::bootstrap::result;
 use crate::middleware::authentication::AdminIdentity;
 use crate::models::goods_category::{GoodsCategoryFilter, NewGoodsCategory, UpdateGoodsCategory};
 use crate::services;
-use actix_web::web::{Data, Json, Path, Query};
-use actix_web::{delete, get, post, put, web};
-use chrono::Local;
 
 // 商品分类列表接口
 #[get("")]

@@ -1,6 +1,7 @@
-use crate::utils::md5_string;
 use chrono::Local;
 use rand::Rng;
+
+use crate::utils::md5_string;
 
 pub fn generate_token(id: i64) -> String {
     let s = format!(

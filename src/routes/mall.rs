@@ -1,5 +1,6 @@
-use crate::app::mall::*;
 use actix_web::web;
+
+use crate::app::mall::*;
 
 pub fn register_routes(s: &mut web::ServiceConfig) {
     s.service(

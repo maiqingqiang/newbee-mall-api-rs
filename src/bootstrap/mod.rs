@@ -4,8 +4,9 @@ pub mod error;
 pub mod response;
 
 pub mod result {
-    use crate::bootstrap::error::ApplicationError;
     use actix_web::HttpResponse;
+
+    use crate::bootstrap::error::ApplicationError;
 
     pub type Result<T, E = ApplicationError> = std::result::Result<T, E>;
 

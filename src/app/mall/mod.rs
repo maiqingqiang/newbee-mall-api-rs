@@ -1,3 +1,8 @@
+use chrono::NaiveDateTime;
+use serde::{Deserialize, Serialize};
+
+use crate::app::deserialize_option_number_from_string;
+
 pub mod address;
 pub mod categories;
 pub mod goods;
@@ -5,10 +10,6 @@ pub mod index;
 pub mod order;
 pub mod shop_cart;
 pub mod user;
-
-use crate::app::deserialize_option_number_from_string;
-use chrono::NaiveDateTime;
-use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]

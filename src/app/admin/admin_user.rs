@@ -1,11 +1,12 @@
+use actix_web::web::{Data, Json};
+use actix_web::{delete, get, post, put};
+
 use crate::app::admin::{LoginRequest, ProfileResponse, UpdateNameRequest, UpdatePasswordRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::middleware::authentication::AdminIdentity;
 use crate::services;
-use actix_web::web::{Data, Json};
-use actix_web::{delete, get, post, put};
 
 // 登录接口
 #[post("/login")]

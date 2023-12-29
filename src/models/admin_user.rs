@@ -1,9 +1,10 @@
+use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
+
 use crate::bootstrap::database::PooledConn;
 use crate::debug_sql;
 use crate::models::schema::tb_newbee_mall_admin_user::dsl;
 use crate::models::NOT_LOCK;
-use diesel::prelude::*;
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Queryable, Serialize, Deserialize, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_admin_user)]

@@ -1,3 +1,8 @@
+use std::collections::HashMap;
+
+use chrono::Local;
+use itertools::Itertools;
+
 use crate::app::mall;
 use crate::app::mall::OrderListResponse;
 use crate::bootstrap::database::PooledConn;
@@ -10,9 +15,6 @@ use crate::models::order_item::{NewOrderItem, OrderItem};
 use crate::models::shopping_cart::ShoppingCart;
 use crate::models::user_address::UserAddress;
 use crate::{constant, utils};
-use chrono::Local;
-use itertools::Itertools;
-use std::collections::HashMap;
 
 pub fn save(
     conn: &mut PooledConn,

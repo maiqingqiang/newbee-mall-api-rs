@@ -1,3 +1,7 @@
+use actix_web::web::{Data, Json, Path, Query};
+use actix_web::{get, put};
+use chrono::Local;
+
 use crate::app::admin::{Goods, GoodsDetailResponse, GoodsListRequest, UpdateGoodsRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
@@ -5,9 +9,6 @@ use crate::bootstrap::result;
 use crate::middleware::authentication::AdminIdentity;
 use crate::models::goods::{GoodsListFilter, UpdateGoods};
 use crate::services;
-use actix_web::web::{Data, Json, Path, Query};
-use actix_web::{get, put};
-use chrono::Local;
 
 // 商品列表接口
 #[get("list")]
@@ -91,15 +92,12 @@ pub async fn update(
 
 // 获取单条商品信息接口
 #[get("{goods_id}")]
-pub async fn detail(
-    pool: Data<DatabasePool>,
-    goods_id: Path<u64>,
-) -> result::Response {
+pub async fn detail(pool: Data<DatabasePool>, goods_id: Path<u64>) -> result::Response {
     let conn = &mut pool.get()?;
 
     let goods = services::goods::detail(conn, goods_id.into_inner())?;
 
-    Response::success(GoodsDetailResponse{
+    Response::success(GoodsDetailResponse {
         goods: Goods {
             goods_id: goods.goods_id,
             goods_name: goods.goods_name,

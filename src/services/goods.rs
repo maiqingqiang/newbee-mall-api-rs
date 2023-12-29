@@ -33,7 +33,7 @@ pub fn list(conn: &mut PooledConn, filter: &GoodsListFilter) -> result::Result<P
 pub fn update(conn: &mut PooledConn, update_goods: &UpdateGoods) -> result::Result<()> {
     let goods_carousel = GoodsCategory::find(conn, update_goods.goods_category_id);
 
-    if goods_carousel.is_err() ||  goods_carousel?.category_level != CATEGORY_LEVEL_THIRD {
+    if goods_carousel.is_err() || goods_carousel?.category_level != CATEGORY_LEVEL_THIRD {
         return Err(ApplicationError::from("分类数据异常！"));
     }
 

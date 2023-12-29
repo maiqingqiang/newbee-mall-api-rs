@@ -1,11 +1,13 @@
+use std::ops::Add;
+
+use chrono::{Duration, Local};
+
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::error::ApplicationError;
 use crate::bootstrap::result;
 use crate::models::admin_user::AdminUser;
 use crate::models::admin_user_token::AdminUserToken;
 use crate::utils::token::generate_token;
-use chrono::{Duration, Local};
-use std::ops::Add;
 
 pub fn login(
     conn: &mut PooledConn,

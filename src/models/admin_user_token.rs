@@ -1,8 +1,9 @@
+use chrono::NaiveDateTime;
+use diesel::prelude::*;
+
 use crate::bootstrap::database::PooledConn;
 use crate::debug_sql;
 use crate::models::schema::tb_newbee_mall_admin_user_token::dsl;
-use chrono::NaiveDateTime;
-use diesel::prelude::*;
 
 #[derive(Debug, Queryable, Insertable, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_admin_user_token)]

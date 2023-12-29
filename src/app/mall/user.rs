@@ -1,3 +1,6 @@
+use actix_web::{get, post, put, web};
+use chrono::Local;
+
 use crate::app::mall::{EditUserInfoRequest, LoginRequest, RegisterRequest, UserInfoResponse};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
@@ -7,8 +10,6 @@ use crate::middleware::authentication::MallIdentity;
 use crate::models::user::NewUser;
 use crate::services;
 use crate::utils::md5;
-use actix_web::{get, post, put, web};
-use chrono::Local;
 
 // 用户注册
 #[post("/register")]

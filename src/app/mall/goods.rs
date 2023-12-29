@@ -1,10 +1,11 @@
+use actix_web::{get, web};
+
 use crate::app::mall::{GoodsDetailResponse, GoodsSearchRequest, GoodsSearchResponse};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::models::goods::GoodsSearchFilter;
 use crate::services;
-use actix_web::{get, web};
 
 // 商品搜索接口
 // 根据关键字和分类id进行搜索

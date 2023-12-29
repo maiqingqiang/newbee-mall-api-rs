@@ -1,5 +1,5 @@
-use md5::Md5;
 use md5::Digest;
+use md5::Md5;
 
 pub mod number;
 pub mod token;
@@ -25,6 +25,9 @@ mod tests {
 
     #[test]
     fn test_md5_string() {
-        assert_eq!(md5_string(String::from("hello world")), "5eb63bbbe01eeed093cb22bb8f5acdc3");
+        assert_eq!(
+            md5_string(String::from("hello world")),
+            "5eb63bbbe01eeed093cb22bb8f5acdc3"
+        );
     }
 }

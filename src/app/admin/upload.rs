@@ -1,12 +1,14 @@
-use crate::bootstrap::response::Response;
-use crate::bootstrap::result;
-use crate::constant::FILE_UPLOAD_DIC;
+use std::io::Write;
+use std::{fs, path};
+
 use actix_multipart::{Field, Multipart};
 use actix_web::{post, web, HttpRequest};
 use futures_util::TryStreamExt;
-use std::io::Write;
-use std::{fs, path};
 use uuid::Uuid;
+
+use crate::bootstrap::response::Response;
+use crate::bootstrap::result;
+use crate::constant::FILE_UPLOAD_DIC;
 
 // 图片上传
 #[post("/file")]

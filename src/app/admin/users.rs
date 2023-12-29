@@ -1,11 +1,12 @@
+use actix_web::web::{Data, Json, Path, Query};
+use actix_web::{get, put};
+
 use crate::app::admin::{LockUserRequest, User, UserListRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::models::user::UserFilter;
 use crate::services;
-use actix_web::web::{Data, Json, Path, Query};
-use actix_web::{get, put};
 
 // 商城注册用户列表
 #[get("")]

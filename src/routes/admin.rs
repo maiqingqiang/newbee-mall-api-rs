@@ -1,5 +1,6 @@
-use crate::app::admin::*;
 use actix_web::web;
+
+use crate::app::admin::*;
 
 pub fn register_routes(s: &mut web::ServiceConfig) {
     s.service(
@@ -45,10 +46,11 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
                     .service(users::lock_user),
             )
             // /api/v1/goods
-            .service(web::scope("/goods")
-                .service(goods::list)
-                .service(goods::update)
-                .service(goods::detail)
+            .service(
+                web::scope("/goods")
+                    .service(goods::list)
+                    .service(goods::update)
+                    .service(goods::detail),
             ),
     );
 }

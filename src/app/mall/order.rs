@@ -1,3 +1,5 @@
+use actix_web::{get, post, put, web};
+
 use crate::app::mall::{
     OrderDetailResponse, OrderItem, OrderListRequest, OrderSaveRequest, PaySuccessRequest,
 };
@@ -8,7 +10,6 @@ use crate::middleware::authentication::MallIdentity;
 use crate::models::order;
 use crate::models::order::OrderStatus;
 use crate::services;
-use actix_web::{get, post, put, web};
 
 // 生成订单接口
 #[post("/saveOrder")]

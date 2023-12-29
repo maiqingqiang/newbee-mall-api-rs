@@ -1,3 +1,6 @@
+use actix_web::web::{Data, Json, Path, Query};
+use actix_web::{delete, get, post, put};
+
 use crate::app::admin::{
     Carousel, CarouselListRequest, CreateCarouselRequest, DeleteCarouselRequest,
     UpdateCarouselRequest,
@@ -7,8 +10,6 @@ use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::middleware::authentication::AdminIdentity;
 use crate::services;
-use actix_web::web::{Data, Json, Path, Query};
-use actix_web::{delete, get, post, put};
 
 // 轮播图列表
 #[get("")]

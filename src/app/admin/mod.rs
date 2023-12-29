@@ -1,13 +1,14 @@
+use chrono::NaiveDateTime;
+use serde::{Deserialize, Serialize};
+
+use crate::app::deserialize_number_from_string;
+
 pub mod admin_user;
 pub mod carousels;
 pub mod categories;
 pub mod goods;
 pub mod upload;
 pub mod users;
-
-use crate::app::deserialize_number_from_string;
-use chrono::NaiveDateTime;
-use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
@@ -239,5 +240,5 @@ pub struct UpdateGoodsRequest {
 #[derive(Serialize)]
 #[serde(rename_all(serialize = "camelCase"))]
 pub struct GoodsDetailResponse {
-    pub goods: Goods
+    pub goods: Goods,
 }

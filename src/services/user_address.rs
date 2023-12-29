@@ -1,8 +1,9 @@
+use diesel::NotFound;
+
 use crate::app::mall::UserAddresseUpdateRequest;
 use crate::bootstrap::database::PooledConn;
 use crate::bootstrap::result;
 use crate::models::user_address::{NewUserAddress, UserAddress};
-use diesel::NotFound;
 
 pub fn list(conn: &mut PooledConn, user_id: i64) -> result::Result<Vec<UserAddress>> {
     Ok(UserAddress::list(conn, user_id)?)

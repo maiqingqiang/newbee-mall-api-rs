@@ -1,13 +1,14 @@
-use crate::bootstrap::database::PooledConn;
-use crate::debug_sql;
-use crate::models::pagination::{Paginate, Paginator};
-use crate::models::schema::tb_newbee_mall_carousel::dsl;
-use crate::models::{DELETED, NOT_DELETE};
 use chrono::{Local, NaiveDateTime};
 use diesel::dsl::IntoBoxed;
 use diesel::mysql::Mysql;
 use diesel::prelude::*;
 use serde::Serialize;
+
+use crate::bootstrap::database::PooledConn;
+use crate::debug_sql;
+use crate::models::pagination::{Paginate, Paginator};
+use crate::models::schema::tb_newbee_mall_carousel::dsl;
+use crate::models::{DELETED, NOT_DELETE};
 
 #[derive(Debug, Queryable, Serialize, AsChangeset)]
 #[diesel(table_name = crate::models::schema::tb_newbee_mall_carousel)]

@@ -1,11 +1,12 @@
-use crate::constant::FILE_UPLOAD_DIC;
-use crate::{config, routes};
 use actix_cors::Cors;
 use actix_files::Files;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use dotenvy::dotenv;
 use tracing_actix_web::TracingLogger;
+
+use crate::constant::FILE_UPLOAD_DIC;
+use crate::{config, routes};
 
 pub async fn start() -> std::io::Result<()> {
     dotenv().ok();

@@ -1,11 +1,12 @@
+use chrono::{Local, NaiveDateTime};
+use diesel::prelude::*;
+use diesel::{QueryDsl, QueryResult, RunQueryDsl};
+
 use crate::bootstrap::database::PooledConn;
 use crate::debug_sql;
 use crate::models::schema;
 use crate::models::schema::tb_newbee_mall_user_address::dsl;
 use crate::models::{DELETED, NOT_DELETE};
-use chrono::{Local, NaiveDateTime};
-use diesel::prelude::*;
-use diesel::{QueryDsl, QueryResult, RunQueryDsl};
 
 #[derive(Debug, Queryable, AsChangeset)]
 #[diesel(table_name = schema::tb_newbee_mall_user_address)]

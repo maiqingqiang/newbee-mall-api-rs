@@ -1,3 +1,6 @@
+use actix_web::web::{Data, Path};
+use actix_web::{delete, get, post, put, web};
+
 use crate::app::mall::{
     UserAddressDetailResponse, UserAddressListResponse, UserAddresseSaveRequest,
     UserAddresseUpdateRequest,
@@ -8,8 +11,6 @@ use crate::bootstrap::result;
 use crate::middleware::authentication::MallIdentity;
 use crate::models::user_address::NewUserAddress;
 use crate::services;
-use actix_web::web::{Data, Path};
-use actix_web::{delete, get, post, put, web};
 
 // 我的收货地址列表
 #[get("")]

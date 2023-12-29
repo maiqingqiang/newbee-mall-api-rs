@@ -1,6 +1,7 @@
-use serde::{Deserialize, Deserializer};
 use std::fmt::Display;
 use std::str::FromStr;
+
+use serde::{Deserialize, Deserializer};
 
 pub mod admin;
 pub mod mall;
