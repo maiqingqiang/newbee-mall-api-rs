@@ -1,6 +1,6 @@
 [package]
 name = "newbee-mall-api-rs"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -16,7 +16,7 @@ chrono = { version = "0.4", features = ["serde"] }
 derive_more = "0.99"
 r2d2 = "0.8"
 rand = "0.8"
-actix-cors = "0.6"
+actix-cors = "0.7"
 futures-util = "0.3"
 itertools = "0.12"
 actix-multipart = "0.6"
