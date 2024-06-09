@@ -1,9 +1,9 @@
-use actix_web::web::{Data, Path};
 use actix_web::{delete, get, post, put, web};
+use actix_web::web::{Data, Path};
 
 use crate::app::mall::{
-    UserAddressDetailResponse, UserAddressListResponse, UserAddresseSaveRequest,
-    UserAddresseUpdateRequest,
+    UserAddressDetailResponse, UserAddresseSaveRequest, UserAddresseUpdateRequest,
+    UserAddressListResponse,
 };
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;

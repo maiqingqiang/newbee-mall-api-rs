@@ -1,13 +1,13 @@
+use actix_web::{get, post, put};
 use actix_web::web::{Data, Json, Path, Query};
-use actix_web::{get, put};
 use chrono::Local;
 
-use crate::app::admin::{Goods, GoodsDetailResponse, GoodsListRequest, UpdateGoodsRequest};
+use crate::app::admin::{CreateGoodRequest, Goods, GoodsDetailResponse, GoodsListRequest, UpdateGoodsRequest};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;
 use crate::middleware::authentication::AdminIdentity;
-use crate::models::goods::{GoodsListFilter, UpdateGoods};
+use crate::models::goods::{GoodsListFilter, NewGood, UpdateGoods};
 use crate::services;
 
 // 商品列表接口
@@ -117,4 +117,34 @@ pub async fn detail(pool: Data<DatabasePool>, goods_id: Path<u64>) -> result::Re
             goods_detail_content: goods.goods_detail_content,
         },
     })
+}
+
+// 新增商品信息接口
+#[post("")]
+pub async fn create(
+    pool: Data<DatabasePool>,
+    Json(goods): Json<CreateGoodRequest>,
+    identity: AdminIdentity,
+) -> result::Response {
+    let conn = &mut pool.get()?;
+
+    let goods = services::goods::create(
+        conn,
+        NewGood {
+            goods_category_id: goods.goods_category_id,
+            goods_cover_img: goods.goods_cover_img,
+            goods_detail_content: goods.goods_detail_content,
+            goods_intro: goods.goods_intro,
+            goods_name: goods.goods_name,
+            goods_sell_status: goods.goods_sell_status,
+            original_price: goods.original_price,
+            selling_price: goods.selling_price,
+            stock_num: goods.stock_num,
+            tag: goods.tag,
+            create_user: identity.admin_user.admin_user_id as i32,
+            create_time: Local::now().naive_local(),
+        },
+    )?;
+
+    Response::success(goods)
 }

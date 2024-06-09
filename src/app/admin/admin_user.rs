@@ -1,5 +1,5 @@
-use actix_web::web::{Data, Json};
 use actix_web::{delete, get, post, put};
+use actix_web::web::{Data, Json};
 
 use crate::app::admin::{LoginRequest, ProfileResponse, UpdateNameRequest, UpdatePasswordRequest};
 use crate::bootstrap::database::DatabasePool;

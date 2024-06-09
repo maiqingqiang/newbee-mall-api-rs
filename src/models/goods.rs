@@ -19,7 +19,8 @@ pub const GOOD_ORDER_BY_NEW: &str = "new";
 // 按照售价从小到大排列
 pub const GOOD_ORDER_BY_PRICE: &str = "price";
 
-#[derive(Debug, Queryable, Serialize)]
+#[derive(Debug, Queryable, Serialize, Insertable)]
+#[diesel(table_name = crate::models::schema::tb_newbee_mall_goods_info)]
 pub struct Goods {
     pub goods_id: u64,
     pub goods_name: String,
@@ -56,6 +57,10 @@ pub struct UpdateGoods {
     pub update_user: i32,
     pub update_time: NaiveDateTime,
 }
+
+
+
+sql_function!(fn last_insert_id() -> Unsigned<BigInt>);
 
 impl UpdateGoods {
     pub fn update(&self, conn: &mut PooledConn) -> QueryResult<usize> {
@@ -125,7 +130,7 @@ impl Goods {
             },
             filter.page_number,
         )
-        .load_with_paginator(conn)
+            .load_with_paginator(conn)
     }
 
     pub fn get(conn: &mut PooledConn, filter: &GoodsListFilter) -> QueryResult<Paginator<Goods>> {
@@ -145,8 +150,8 @@ impl Goods {
             },
             filter.page_number,
         )
-        .per_page(filter.page_size)
-        .load_with_paginator(conn)
+            .per_page(filter.page_size)
+            .load_with_paginator(conn)
     }
 
     pub fn find(conn: &mut PooledConn, goods_id: u64) -> QueryResult<Self> {
@@ -211,5 +216,38 @@ impl Goods {
         debug_sql!(&query);
 
         query.execute(conn)
+    }
+}
+
+#[derive(Debug, Insertable)]
+#[diesel(table_name = crate::models::schema::tb_newbee_mall_goods_info)]
+pub struct NewGood {
+    pub goods_name: String,
+    pub goods_intro: String,
+    pub goods_category_id: i64,
+    pub goods_cover_img: String,
+    pub goods_detail_content: String,
+    pub original_price: i32,
+    pub selling_price: i32,
+    pub stock_num: u32,
+    pub tag: String,
+    pub goods_sell_status: i8,
+    pub create_user: i32,
+    pub create_time: NaiveDateTime,
+}
+
+impl NewGood {
+    pub fn create(self, conn: &mut PooledConn) -> QueryResult<Goods> {
+        let query = diesel::insert_into(dsl::tb_newbee_mall_goods_info).values(self);
+
+        debug_sql!(&query);
+
+        query.execute(conn)?;
+
+        let query = dsl::tb_newbee_mall_goods_info.find(last_insert_id());
+
+        debug_sql!(&query);
+
+        query.first(conn)
     }
 }

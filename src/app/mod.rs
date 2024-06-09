@@ -7,10 +7,10 @@ pub mod admin;
 pub mod mall;
 
 fn deserialize_option_number_from_string<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
-where
-    D: Deserializer<'de>,
-    T: FromStr + serde::Deserialize<'de>,
-    <T as FromStr>::Err: Display,
+    where
+        D: Deserializer<'de>,
+        T: FromStr + serde::Deserialize<'de>,
+        <T as FromStr>::Err: Display,
 {
     #[derive(Deserialize)]
     #[serde(untagged)]
@@ -31,10 +31,10 @@ where
 }
 
 fn deserialize_number_from_string<'de, D, T>(deserializer: D) -> Result<T, D::Error>
-where
-    D: Deserializer<'de>,
-    T: FromStr + serde::Deserialize<'de>,
-    <T as FromStr>::Err: Display,
+    where
+        D: Deserializer<'de>,
+        T: FromStr + serde::Deserialize<'de>,
+        <T as FromStr>::Err: Display,
 {
     #[derive(Deserialize)]
     #[serde(untagged)]

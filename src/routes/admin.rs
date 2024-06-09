@@ -50,7 +50,8 @@ pub fn register_routes(s: &mut web::ServiceConfig) {
                 web::scope("/goods")
                     .service(goods::list)
                     .service(goods::update)
-                    .service(goods::detail),
+                    .service(goods::detail)
+                    .service(goods::create),
             ),
     );
 }

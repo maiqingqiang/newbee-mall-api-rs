@@ -1,5 +1,5 @@
-use actix_web::web::{Data, Json, Path, Query};
 use actix_web::{delete, get, post, put, web};
+use actix_web::web::{Data, Json, Path, Query};
 use chrono::Local;
 
 use crate::app::admin::{
@@ -59,7 +59,7 @@ pub async fn list(
 // 新增分类接口
 #[post("")]
 pub async fn create(
-    pool: web::Data<DatabasePool>,
+    pool: Data<DatabasePool>,
     Json(json): Json<CreateCategoryRequest>,
     identity: AdminIdentity,
 ) -> result::Response {
