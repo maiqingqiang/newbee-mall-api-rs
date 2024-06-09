@@ -1,5 +1,5 @@
-use actix_web::{get, put};
 use actix_web::web::{Data, Json, Path, Query};
+use actix_web::{get, put};
 
 use crate::app::admin::{LockUserRequest, User, UserListRequest};
 use crate::bootstrap::database::DatabasePool;

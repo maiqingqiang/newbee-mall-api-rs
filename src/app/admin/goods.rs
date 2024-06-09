@@ -1,8 +1,10 @@
-use actix_web::{get, post, put};
 use actix_web::web::{Data, Json, Path, Query};
+use actix_web::{get, post, put};
 use chrono::Local;
 
-use crate::app::admin::{CreateGoodRequest, Goods, GoodsDetailResponse, GoodsListRequest, UpdateGoodsRequest};
+use crate::app::admin::{
+    CreateGoodRequest, Goods, GoodsDetailResponse, GoodsListRequest, UpdateGoodsRequest,
+};
 use crate::bootstrap::database::DatabasePool;
 use crate::bootstrap::response::Response;
 use crate::bootstrap::result;

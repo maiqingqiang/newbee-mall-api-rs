@@ -58,8 +58,6 @@ pub struct UpdateGoods {
     pub update_time: NaiveDateTime,
 }
 
-
-
 sql_function!(fn last_insert_id() -> Unsigned<BigInt>);
 
 impl UpdateGoods {
@@ -130,7 +128,7 @@ impl Goods {
             },
             filter.page_number,
         )
-            .load_with_paginator(conn)
+        .load_with_paginator(conn)
     }
 
     pub fn get(conn: &mut PooledConn, filter: &GoodsListFilter) -> QueryResult<Paginator<Goods>> {
@@ -150,8 +148,8 @@ impl Goods {
             },
             filter.page_number,
         )
-            .per_page(filter.page_size)
-            .load_with_paginator(conn)
+        .per_page(filter.page_size)
+        .load_with_paginator(conn)
     }
 
     pub fn find(conn: &mut PooledConn, goods_id: u64) -> QueryResult<Self> {

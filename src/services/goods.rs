@@ -3,7 +3,7 @@ use crate::bootstrap::error::ApplicationError;
 use crate::bootstrap::result;
 use crate::models::goods;
 use crate::models::goods::{Goods, GoodsListFilter, GoodsSearchFilter, NewGood, UpdateGoods};
-use crate::models::goods_category::{CATEGORY_LEVEL_THIRD, GoodsCategory};
+use crate::models::goods_category::{GoodsCategory, CATEGORY_LEVEL_THIRD};
 use crate::models::pagination::Paginator;
 
 // 商品搜索
@@ -57,17 +57,11 @@ pub fn update(conn: &mut PooledConn, update_goods: &UpdateGoods) -> result::Resu
     Ok(())
 }
 
-pub fn detail(
-    conn: &mut PooledConn,
-    goods_id: u64,
-) -> result::Result<Goods> {
+pub fn detail(conn: &mut PooledConn, goods_id: u64) -> result::Result<Goods> {
     let good = Goods::find(conn, goods_id)?;
     Ok(good)
 }
 
-pub fn create(
-    conn: &mut PooledConn,
-    good: NewGood,
-) -> result::Result<Goods> {
+pub fn create(conn: &mut PooledConn, good: NewGood) -> result::Result<Goods> {
     Ok(good.create(conn)?)
 }

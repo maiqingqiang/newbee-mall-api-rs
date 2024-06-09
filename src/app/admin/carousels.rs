@@ -1,5 +1,5 @@
-use actix_web::{delete, get, post, put};
 use actix_web::web::{Data, Json, Path, Query};
+use actix_web::{delete, get, post, put};
 
 use crate::app::admin::{
     Carousel, CarouselListRequest, CreateCarouselRequest, DeleteCarouselRequest,
